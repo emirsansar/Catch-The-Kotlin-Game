@@ -92,12 +92,24 @@
         android:layout_width="240dp"
         android:layout_height="30dp"
         android:layout_marginTop="24dp"
-        android:text="Select Game Duraiton:"
+        android:text="Select Game Duration:"
         android:textAlignment="center"
         android:textSize="19sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textDescription" />
+
+    <TextView
+        android:id="@+id/textSec"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="55dp"
+        android:text="sec"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.544"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/timePicker" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
