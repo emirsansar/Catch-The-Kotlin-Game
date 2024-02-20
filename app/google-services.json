@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "136368910446",
+    "project_id": "catch-the-kotlin-game",
+    "storage_bucket": "catch-the-kotlin-game.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:136368910446:android:c553fcbff6aa101676f67f",
+        "android_client_info": {
+          "package_name": "com.emirsansar.catchthekotlingame"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxCThkI9B-RN-Dp-a6OkI9o_rID_3TWlo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
