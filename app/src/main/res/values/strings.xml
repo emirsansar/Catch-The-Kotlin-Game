@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Catch The Kotlin Game</string>
+
+    <string-array name="durations">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>30</item>
+    </string-array>
+
 </resources>

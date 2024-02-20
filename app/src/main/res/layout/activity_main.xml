@@ -5,21 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    tools:context=".view.MainActivity"
     android:background="#C5DEEB">
-
-    <NumberPicker
-        android:id="@+id/timePicker"
-        android:layout_width="260dp"
-        android:layout_height="130dp"
-        android:layout_marginTop="40dp"
-        android:contextClickable="false"
-        android:textSize="20sp"
-        android:orientation="horizontal"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textDescription" />
 
     <TextView
         android:id="@+id/textTitle"
@@ -30,6 +17,7 @@
         android:padding="4dp"
         android:text="Welcome to \n&quot;Catch The Kotlin&quot;"
         android:textAlignment="center"
+        android:textColor="@color/black"
         android:textIsSelectable="false"
         android:textSize="34sp"
         android:textStyle="bold"
@@ -46,6 +34,7 @@
         android:padding="4dp"
         android:text="&quot;Try to catch the 'Kotlin' symbols appearing on the screen and changing location every half a second in this game!&quot;"
         android:textAlignment="center"
+        android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
@@ -56,13 +45,13 @@
         android:id="@+id/btnStart"
         android:layout_width="150dp"
         android:layout_height="55dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="30dp"
         android:onClick="launchGame"
         android:text="PLAY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timePicker" />
+        app:layout_constraintTop_toBottomOf="@+id/spinnerTime" />
 
     <Button
         android:id="@+id/btnQuit"
@@ -94,22 +83,24 @@
         android:layout_marginTop="24dp"
         android:text="Select Game Duration:"
         android:textAlignment="center"
+        android:textColor="@color/black"
         android:textSize="19sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textDescription" />
 
-    <TextView
-        android:id="@+id/textSec"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="55dp"
-        android:text="sec"
+    <Spinner
+        android:id="@+id/spinnerTime"
+        android:layout_width="150dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.544"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/timePicker" />
+        app:layout_constraintTop_toBottomOf="@+id/textSelTime"
+        android:background="#d8d7d9"
+        android:popupBackground="#d8d7d9"
+        android:entries="@array/durations"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
