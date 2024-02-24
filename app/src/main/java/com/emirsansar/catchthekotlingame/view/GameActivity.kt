@@ -4,14 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.ViewModelProvider
 import com.emirsansar.catchthekotlingame.GameManager
 import com.emirsansar.catchthekotlingame.databinding.ActivityGameBinding
-import com.emirsansar.catchthekotlingame.viewmodel.UserRecordViewModel
-import com.google.firebase.Firebase
-import com.google.firebase.FirebaseApp
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.firestore
 
 class GameActivity : AppCompatActivity() {
 
