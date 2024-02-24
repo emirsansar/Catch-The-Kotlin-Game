@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.login.RegisterFragment"
+    android:background="#C5DEEB">
+
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/opensanssemibold"
+        android:text="Kayıt Ol"
+        android:textSize="18sp"
+        app:iconTint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textRegisterPassword2" />
+
+    <EditText
+        android:id="@+id/textRegisterPassword2"
+        android:layout_width="250dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/black"
+        android:ems="10"
+        android:fontFamily="@font/opensansmedium"
+        android:hint="Şifre: (tekrar)"
+        android:inputType="textPassword"
+        android:textColor="@color/text"
+        android:textColorHint="@color/text"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textRegisterPassword" />
+
+    <EditText
+        android:id="@+id/textRegisterPassword"
+        android:layout_width="250dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/black"
+        android:ems="10"
+        android:fontFamily="@font/opensansmedium"
+        android:hint="Şifre:"
+        android:inputType="textPassword"
+        android:textColor="@color/text"
+        android:textColorHint="@color/text"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textRegisterEmail" />
+
+    <EditText
+        android:id="@+id/textRegisterEmail"
+        android:layout_width="250dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/black"
+        android:ems="10"
+        android:fontFamily="@font/opensansmedium"
+        android:hint="Email:"
+        android:inputType="textEmailAddress"
+        android:textColor="@color/text"
+        android:textColorHint="@color/text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textRegisterSurname" />
+
+    <EditText
+        android:id="@+id/textRegisterSurname"
+        android:layout_width="250dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/black"
+        android:ems="10"
+        android:fontFamily="@font/opensansmedium"
+        android:hint="Soyad:"
+        android:inputType="text"
+        android:textColor="@color/text"
+        android:textColorHint="@color/text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textRegisterName" />
+
+    <EditText
+        android:id="@+id/textRegisterName"
+        android:layout_width="250dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/black"
+        android:ems="10"
+        android:fontFamily="@font/opensansmedium"
+        android:hint="İsim:"
+        android:inputType="text"
+        android:textColor="@color/text"
+        android:textColorHint="@color/text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="203dp"
+        android:layout_height="26dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="15dp"
+        android:fontFamily="@font/opensanssemibold"
+        android:text="Bilgilerinizi Giriniz:"
+        android:textColor="#303030"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.389"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="176dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/opensansregular"
+        android:text="KAYIT OL"
+        android:textAlignment="center"
+        android:textColor="#303030"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView4"
+        app:layout_constraintVertical_bias="0.031" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/registerimage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/opensansregular"
+        android:textColor="#CA2E2E"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnRegister" />
+
+    <TextView
+        android:id="@+id/textLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/opensansregular"
+        android:text="Giriş yapmak için tıklayın."
+        android:textSize="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnRegister" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
