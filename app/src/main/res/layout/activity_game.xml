@@ -5,10 +5,8 @@
     android:id="@+id/btnQuit"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#C5DEEB"
-    tools:context=".view.MainActivity"><![CDATA[>
-
-    ]]>
+    android:background="@color/blue_2"
+    tools:context=".view.MainActivity">
 
     <TextView
         android:id="@+id/highestScore"
@@ -73,7 +71,7 @@
         app:layout_constraintVertical_bias="0.197">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/imageView1"
             android:layout_width="110dp"
             android:layout_height="130dp"
             android:layout_marginStart="10dp"
@@ -232,6 +230,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:backgroundTint="@color/blue_3"
         android:text="BACK"
         app:layout_constraintEnd_toStartOf="@+id/btnStartGame"
         app:layout_constraintHorizontal_bias="0.562"
@@ -244,7 +243,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="84dp"
-        android:text="PLAY"
+        android:backgroundTint="@color/blue_3"
+        android:text="START"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gridLayout" />
 

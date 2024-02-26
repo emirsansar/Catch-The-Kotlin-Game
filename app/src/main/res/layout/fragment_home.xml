@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.main.HomeFragment"
+    android:background="#5981B1"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout5"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/blue_2"
+        app:layout_constraintHeight_percent="0.3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textTitle"
+            android:layout_width="340dp"
+            android:layout_height="57dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="@font/opensansitalic"
+            android:padding="4dp"
+            android:text="Catch The Kotlin"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textIsSelectable="false"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView10" />
+
+        <ImageView
+            android:id="@+id/imageView10"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="25dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/kotlin" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/blue_2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.7"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout5"
+        app:layout_constraintVertical_bias="0.0">
+
+        <TextView
+            android:id="@+id/textDescription"
+            android:layout_width="311dp"
+            android:layout_height="109dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/rounded_corner2"
+            android:fontFamily="@font/opensansregular"
+            android:padding="4dp"
+            android:text="&quot;Try to catch the 'Kotlin' symbols appearing on the screen and changing location every half a second in this game!&quot;"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btnStart"
+            android:layout_width="150dp"
+            android:layout_height="55dp"
+            android:backgroundTint="#365475"
+            android:onClick="launchGame"
+            android:text="PLAY"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.232"
+            app:layout_constraintStart_toEndOf="@+id/btnQuit"
+            app:layout_constraintTop_toTopOf="@+id/btnQuit" />
+
+        <Button
+            android:id="@+id/btnQuit"
+            android:layout_width="150dp"
+            android:layout_height="55dp"
+            android:layout_marginTop="30dp"
+            android:backgroundTint="#365475"
+            android:onClick="quitApp"
+            android:text="QUIT"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.191"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spinnerTime" />
+
+        <TextView
+            android:id="@+id/textSelTime"
+            android:layout_width="240dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="@font/opensansmedium"
+            android:text="Select Game Duration:"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="19sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textDescription" />
+
+        <Spinner
+            android:id="@+id/spinnerTime"
+            android:layout_width="150dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp"
+            android:background="#d8d7d9"
+            android:entries="@array/durations"
+            android:popupBackground="#d8d7d9"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textSelTime" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

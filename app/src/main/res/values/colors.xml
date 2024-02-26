@@ -4,4 +4,15 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="text">#303030</color>
+
+    <color name="blue_1">#98BAE3</color>
+    <color name="blue_2">#5981B1</color>
+    <color name="blue_3">#365475</color>
+    <color name="blue_4">#15273C</color>
+
+    <color name="mavi_1">#015C92</color>
+    <color name="mavi_2">#2D82B5</color>
+    <color name="mavi_3">#53A7D8</color>
+    <color name="mavi_4">#88CDF6</color>
+
 </resources>

@@ -6,101 +6,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.MainActivity"
-    android:background="#C5DEEB">
+    >
 
-    <TextView
-        android:id="@+id/textTitle"
-        android:layout_width="287dp"
-        android:layout_height="92dp"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/rounded_corner2"
-        android:padding="4dp"
-        android:text="Welcome to \n&quot;Catch The Kotlin&quot;"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textIsSelectable="false"
-        android:textSize="34sp"
-        android:textStyle="bold"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_main_menu"
+        android:layout_width="0dp"
+        android:layout_height="65dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView10" />
+        app:menu="@menu/menu_main"
+        app:itemIconTint="@color/black"
+        app:itemTextColor="@color/black"
+        android:background="@color/blue_1"/>
 
-    <TextView
-        android:id="@+id/textDescription"
-        android:layout_width="276dp"
-        android:layout_height="99dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/rounded_corner2"
-        android:padding="4dp"
-        android:text="&quot;Try to catch the 'Kotlin' symbols appearing on the screen and changing location every half a second in this game!&quot;"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="18sp"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentMainContainer"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_main_menu"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textTitle" />
-
-    <Button
-        android:id="@+id/btnStart"
-        android:layout_width="150dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="30dp"
-        android:onClick="launchGame"
-        android:text="PLAY"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerTime" />
-
-    <Button
-        android:id="@+id/btnQuit"
-        android:layout_width="150dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="16dp"
-        android:onClick="quitApp"
-        android:text="QUIT"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnStart" />
-
-    <ImageView
-        android:id="@+id/imageView10"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/kotlin" />
+        app:layout_constraintVertical_bias="1.0"
+        app:navGraph="@navigation/navigation_main" />
 
-    <TextView
-        android:id="@+id/textSelTime"
-        android:layout_width="240dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="24dp"
-        android:text="Select Game Duration:"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="19sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textDescription" />
-
-    <Spinner
-        android:id="@+id/spinnerTime"
-        android:layout_width="150dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textSelTime"
-        android:background="#d8d7d9"
-        android:popupBackground="#d8d7d9"
-        android:entries="@array/durations"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
