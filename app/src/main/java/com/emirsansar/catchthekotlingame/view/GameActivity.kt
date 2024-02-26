@@ -20,8 +20,9 @@ class GameActivity : AppCompatActivity() {
         setContentView(view)
 
         val duration = intent.getStringExtra("DURATION")
+        val userEmail = intent.getStringExtra("USER_EMAIL")
 
-        gameManager = GameManager(this, duration!!, binding)
+        gameManager = GameManager(this, userEmail!!, duration!!, binding)
 
         setListeners()
     }
