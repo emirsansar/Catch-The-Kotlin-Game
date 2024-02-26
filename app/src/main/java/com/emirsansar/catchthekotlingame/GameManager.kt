@@ -13,7 +13,7 @@ import com.emirsansar.catchthekotlingame.view.GameActivity
 import com.emirsansar.catchthekotlingame.viewmodel.UserRecordViewModel
 import java.util.Random
 
-class GameManager(private val context: Context, private val duration: String, private val binding: ActivityGameBinding) {
+class GameManager(private val context: Context, private val userEmail: String, private val duration: String, private val binding: ActivityGameBinding) {
 
     private var score: Int = 0
     private var randomIndex: Int = 0
@@ -36,7 +36,7 @@ class GameManager(private val context: Context, private val duration: String, pr
     }
 
     fun initViews() {
-        imageArray.add(binding.imageView)
+        imageArray.add(binding.imageView1)
         imageArray.add(binding.imageView2)
         imageArray.add(binding.imageView3)
         imageArray.add(binding.imageView4)
@@ -78,7 +78,7 @@ class GameManager(private val context: Context, private val duration: String, pr
     fun loadGameSettings() {
         binding.timeText.text = "Time: $duration"
 
-        viewModel.fetchDataFromRoomDB("asd", duration) { userRecord ->
+        viewModel.fetchDataFromRoomDB(userEmail, duration) { userRecord ->
             if (userRecord != null){
                 binding.highestScore.text = "Highest Score: ${userRecord.record}"
             } else {
@@ -110,14 +110,14 @@ class GameManager(private val context: Context, private val duration: String, pr
     }
 
     private fun updateUserRecord(){
-        viewModel.fetchDataFromRoomDB("asd", duration){ userRecord ->
+        viewModel.fetchDataFromRoomDB(userEmail, duration){ userRecord ->
             if (userRecord != null){
                 if (userRecord.record.toInt() < score){
                     binding.highestScore.text = "Highest Score: ${score}"
-                    viewModel.updateDataToRoomDB("asd",duration,score.toString())
+                    viewModel.updateDataToRoomDB(userEmail, duration, score.toString())
                 }
             } else {
-                viewModel.insertDataToRoomDB("asd", duration, score.toString())
+                viewModel.insertDataToRoomDB(userEmail, duration, score.toString())
                 binding.highestScore.text = "Highest Score: $score"
             }
         }
@@ -165,7 +165,7 @@ class GameManager(private val context: Context, private val duration: String, pr
 
 
     fun setListeners(){
-        binding.imageView.setOnClickListener {
+        binding.imageView1.setOnClickListener {
             increaseScore()
         }
         binding.imageView2.setOnClickListener {
