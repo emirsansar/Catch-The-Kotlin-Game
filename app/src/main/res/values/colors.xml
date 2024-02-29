@@ -15,4 +15,12 @@
     <color name="mavi_3">#53A7D8</color>
     <color name="mavi_4">#88CDF6</color>
 
+    <color name="btn_active">#dddddd</color>
+    <color name="btn_default">#365475</color>
+
+    <color name="rank_normal">#e4f0e9</color>
+    <color name="rank_first">#87ab69</color>
+    <color name="rank_second">#a3c585</color>
+    <color name="rank_third">#c7ddb5</color>
+
 </resources>

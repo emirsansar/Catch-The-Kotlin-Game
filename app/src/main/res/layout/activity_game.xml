@@ -2,250 +2,311 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/btnQuit"
+    android:id="@+id/layoutMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue_2"
+    android:background="@color/black"
     tools:context=".view.MainActivity">
 
-    <TextView
-        android:id="@+id/highestScore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rounded_corner2"
-        android:padding="3sp"
-        android:text="Highest Score: 0"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="22sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scoreText"
-        app:layout_constraintVertical_bias="0.021" />
 
-    <TextView
-        android:id="@+id/timeText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/rounded_corner2"
-        android:padding="3sp"
-        android:text="Time: 00"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="28sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutInformation"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="2dp"
+        app:layout_constraintHeight_percent="0.19"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.037" />
+        android:background="@color/blue_2">
 
-    <TextView
-        android:id="@+id/scoreText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/rounded_corner2"
-        android:padding="3sp"
-        android:text="Score: 0"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="24sp"
+        <TextView
+            android:id="@+id/highestScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/opensanssemibold"
+            android:padding="3sp"
+            android:text="Highest Score: 0"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.932"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timeText"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/timeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/opensansmedium"
+            android:padding="3sp"
+            android:text="Time: 00"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="28sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.2" />
+
+        <TextView
+            android:id="@+id/scoreText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/opensanssemibold"
+            android:padding="3sp"
+            android:text="Score: 0"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/imgScore"
+            app:layout_constraintTop_toBottomOf="@+id/timeText"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ImageView
+            android:id="@+id/imgClock"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginEnd="1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/timeText"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/timeText"
+            app:layout_constraintVertical_bias="0.123"
+            app:srcCompat="@drawable/clock" />
+
+        <ImageView
+            android:id="@+id/imgScore"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timeText"
+            app:srcCompat="@drawable/score" />
+
+        <ImageView
+            android:id="@+id/imgHighScore"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="14dp"
+            app:layout_constraintEnd_toStartOf="@+id/highestScore"
+            app:layout_constraintHorizontal_bias="0.964"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timeText"
+            app:srcCompat="@drawable/trophy" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutPlay"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/blue_3"
+        app:layout_constraintHeight_percent="0.80"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timeText"
-        app:layout_constraintVertical_bias="0.009" />
+        app:layout_constraintTop_toBottomOf="@+id/layoutInformation">
 
-    <androidx.gridlayout.widget.GridLayout
-        android:id="@+id/gridLayout"
-        android:layout_width="363dp"
-        android:layout_height="410dp"
-        android:background="@drawable/rounded_corner"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/highestScore"
-        app:layout_constraintVertical_bias="0.197">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/consLayoutForGridLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="15dp"
+            app:layout_constraintWidth_percent="0.9"
+            app:layout_constraintHeight_percent="0.75"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.473"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            android:background="@drawable/rounded_corner">
 
-        <ImageView
-            android:id="@+id/imageView1"
-            android:layout_width="110dp"
-            android:layout_height="130dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="3dp"
-            android:onClick="increaseScore"
-            app:layout_column="0"
-            app:layout_row="0"
-            app:srcCompat="@drawable/kotlin" />
+            <TextView
+                android:id="@+id/textCountDownForReady"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3"
+                android:visibility="invisible"
+                android:textSize="50sp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/opensansextrabold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                >
+            </TextView>
 
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="110dp"
-            android:layout_height="130dp"
-            android:layout_marginStart="3dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="3dp"
-            android:onClick="increaseScore"
-            app:layout_column="1"
-            app:layout_row="0"
-            app:srcCompat="@drawable/kotlin" />
+            <androidx.gridlayout.widget.GridLayout
+                android:id="@+id/gridLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.197"
+                android:paddingEnd="10dp"
+                android:paddingBottom="7dp"
+                android:paddingStart="5dp">
 
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="110dp"
-            android:layout_height="130dp"
-            android:layout_marginStart="3dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="3dp"
-            android:onClick="increaseScore"
-            app:layout_column="2"
-            app:layout_row="0"
-            app:srcCompat="@drawable/kotlin" />
+                <ImageView
+                    android:id="@+id/imageView1"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="5dp"
+                    app:layout_column="0"
+                    app:layout_row="0"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1"
+                    app:srcCompat="@drawable/kotlin" />
 
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="110dp"
-            android:layout_height="130dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="3dp"
-            android:onClick="increaseScore"
-            app:layout_column="0"
-            app:layout_row="1"
-            app:srcCompat="@drawable/kotlin" />
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="5dp"
+                    app:layout_column="1"
+                    app:layout_row="0"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1"
+                    app:srcCompat="@drawable/kotlin" />
 
-        <ImageView
-            android:id="@+id/imageView5"
-            android:layout_width="110dp"
-            android:layout_height="130dp"
-            android:layout_marginStart="3dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="3dp"
-            android:onClick="increaseScore"
-            app:layout_column="1"
-            app:layout_row="1"
-            app:srcCompat="@drawable/kotlin" />
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="5dp"
+                    app:layout_column="2"
+                    app:layout_row="0"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1"
+                    app:srcCompat="@drawable/kotlin" />
 
-        <ImageView
-            android:id="@+id/imageView6"
-            android:layout_width="110dp"
-            android:layout_height="130dp"
-            android:layout_marginStart="3dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="3dp"
-            android:layout_marginBottom="3dp"
-            android:onClick="increaseScore"
-            app:layout_column="2"
-            app:layout_row="1"
-            app:srcCompat="@drawable/kotlin" />
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="5dp"
+                    app:layout_column="0"
+                    app:layout_row="1"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1"
+                    app:srcCompat="@drawable/kotlin" />
 
-        <ImageView
-            android:id="@+id/imageView7"
-            android:layout_width="110dp"
-            android:layout_height="130dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="3dp"
-            android:layout_marginBottom="3dp"
-            android:onClick="increaseScore"
-            app:layout_column="0"
-            app:layout_row="2"
-            app:srcCompat="@drawable/kotlin" />
+                <ImageView
+                    android:id="@+id/imageView5"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="5dp"
+                    app:layout_column="1"
+                    app:layout_row="1"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1"
+                    app:srcCompat="@drawable/kotlin" />
 
-        <ImageView
-            android:id="@+id/imageView8"
-            android:layout_width="110dp"
-            android:layout_height="130dp"
-            android:layout_marginStart="3dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="3dp"
-            android:onClick="increaseScore"
-            app:layout_column="1"
-            app:layout_row="2"
-            app:srcCompat="@drawable/kotlin" />
+                <ImageView
+                    android:id="@+id/imageView6"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="5dp"
+                    app:layout_column="2"
+                    app:layout_row="1"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1"
+                    app:srcCompat="@drawable/kotlin" />
 
-        <ImageView
-            android:id="@+id/imageView9"
-            android:layout_width="110dp"
-            android:layout_height="130dp"
-            android:layout_marginStart="3dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="3dp"
-            android:layout_marginBottom="3dp"
-            android:onClick="increaseScore"
-            app:layout_column="2"
-            app:layout_row="2"
-            app:srcCompat="@drawable/kotlin" />
+                <ImageView
+                    android:id="@+id/imageView7"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="5dp"
+                    app:layout_column="0"
+                    app:layout_row="2"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1"
+                    app:srcCompat="@drawable/kotlin" />
 
-    </androidx.gridlayout.widget.GridLayout>
+                <ImageView
+                    android:id="@+id/imageView8"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="5dp"
+                    app:layout_column="1"
+                    app:layout_row="2"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1"
+                    app:srcCompat="@drawable/kotlin" />
 
-    <ImageView
-        android:id="@+id/imgClock"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="33dp"
-        android:layout_marginEnd="5dp"
-        app:layout_constraintEnd_toStartOf="@+id/timeText"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/clock" />
+                <ImageView
+                    android:id="@+id/imageView9"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="5dp"
+                    app:layout_column="2"
+                    app:layout_row="2"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1"
+                    app:srcCompat="@drawable/kotlin" />
 
-    <ImageView
-        android:id="@+id/imgScore"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="22dp"
-        android:layout_marginEnd="5dp"
-        app:layout_constraintEnd_toStartOf="@+id/scoreText"
-        app:layout_constraintHorizontal_bias="0.967"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgClock"
-        app:srcCompat="@drawable/score" />
+            </androidx.gridlayout.widget.GridLayout>
 
-    <ImageView
-        android:id="@+id/imgHighScore"
-        android:layout_width="30dp"
-        android:layout_height="32dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="5dp"
-        app:layout_constraintEnd_toStartOf="@+id/highestScore"
-        app:layout_constraintHorizontal_bias="0.964"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgScore"
-        app:srcCompat="@drawable/trophy" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Button
-        android:id="@+id/btnBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="@color/blue_3"
-        android:text="BACK"
-        app:layout_constraintEnd_toStartOf="@+id/btnStartGame"
-        app:layout_constraintHorizontal_bias="0.562"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gridLayout" />
 
-    <Button
-        android:id="@+id/btnStartGame"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="84dp"
-        android:backgroundTint="@color/blue_3"
-        android:text="START"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gridLayout" />
+
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/blue_4"
+            android:text="BACK"
+            app:layout_constraintEnd_toStartOf="@+id/btnStartGame"
+            app:layout_constraintHorizontal_bias="0.562"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/consLayoutForGridLayout" />
+
+        <Button
+            android:id="@+id/btnStartGame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="84dp"
+            android:backgroundTint="@color/blue_4"
+            android:text="START"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/consLayoutForGridLayout" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
