@@ -3,6 +3,10 @@ package com.emirsansar.catchthekotlingame.view
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import com.emirsansar.catchthekotlingame.GameManager
 import com.emirsansar.catchthekotlingame.databinding.ActivityGameBinding
@@ -19,6 +23,8 @@ class GameActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+//        setGridLayout()
+
         val duration = intent.getStringExtra("DURATION")
         val userEmail = intent.getStringExtra("USER_EMAIL")
 
@@ -27,8 +33,16 @@ class GameActivity : AppCompatActivity() {
         setListeners()
     }
 
+//    private fun setGridLayout(){
+//        val layoutParams = binding.gridLayout.layoutParams
+//        layoutParams.width = binding.gridLayout.width
+//        layoutParams.height = binding.gridLayout.width
+//        binding.gridLayout.layoutParams = layoutParams
+//    }
+
     private fun setListeners(){
         binding.btnStartGame.setOnClickListener {
+            binding.textCountDownForReady.visibility = View.VISIBLE
             gameManager.startGame()
         }
 

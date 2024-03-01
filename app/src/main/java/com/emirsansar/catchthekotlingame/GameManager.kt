@@ -16,6 +16,7 @@ import java.util.Random
 class GameManager(private val context: Context, private val userEmail: String, private val duration: String, private val binding: ActivityGameBinding) {
 
     private var score: Int = 0
+    private var userHighestScore: Int = 0
     private var randomIndex: Int = 0
     private var imageArray = ArrayList<ImageView>()
     private var runnable = Runnable {}
@@ -24,15 +25,16 @@ class GameManager(private val context: Context, private val userEmail: String, p
     private var viewModel = ViewModelProvider(context as GameActivity)[UserRecordViewModel::class.java]
 
     init {
-        loadGameSettings()
+        viewModel.getUserScoreFromFirestore(userEmail, duration){
+            binding.highestScore.text = "Highest Score: "+ it.toString()
+        }
         initViews()
     }
 
 
     fun startGame() {
         setButtonEnabled(false)
-        showKotlinView()
-        startCountDown()
+        startCountDownForReady()
     }
 
     fun initViews() {
@@ -61,7 +63,12 @@ class GameManager(private val context: Context, private val userEmail: String, p
                 imageArray[randomIndex].visibility = View.INVISIBLE
 
                 val random = Random()
-                randomIndex = random.nextInt(9)
+                var nextRandomIndex = random.nextInt(9)
+                while (nextRandomIndex == randomIndex) {
+                    nextRandomIndex = random.nextInt(9)
+                }
+                randomIndex = nextRandomIndex
+
                 imageArray[randomIndex].visibility = View.VISIBLE
 
                 handler.postDelayed(runnable, 500)
@@ -70,25 +77,14 @@ class GameManager(private val context: Context, private val userEmail: String, p
         handler.post(runnable)
     }
 
-    fun increaseScore() {
+    private fun increaseScore() {
         score++
         binding.scoreText.text = "Score: $score"
     }
 
-    fun loadGameSettings() {
-        binding.timeText.text = "Time: $duration"
-
-        viewModel.fetchDataFromRoomDB(userEmail, duration) { userRecord ->
-            if (userRecord != null){
-                binding.highestScore.text = "Highest Score: ${userRecord.record}"
-            } else {
-                binding.highestScore.text = "Highest Score: 0"
-            }
-        }
-    }
 
     //CountDownTimer
-    fun startCountDown() {
+    fun startCountDownInPlaying() {
         object : CountDownTimer((duration.toInt() * 1000 + 500).toLong(), 1000) {
 
             override fun onTick(millisUntilFinished: Long) {
@@ -101,7 +97,7 @@ class GameManager(private val context: Context, private val userEmail: String, p
                 handler.removeCallbacks(runnable)
                 imageArray[randomIndex].visibility = View.INVISIBLE
 
-                updateUserRecord()
+                checkHighestScore(score)
 
                 setButtonEnabled(true)
                 showGameOverDialog()
@@ -109,36 +105,56 @@ class GameManager(private val context: Context, private val userEmail: String, p
         }.start()
     }
 
-    private fun updateUserRecord(){
-        viewModel.fetchDataFromRoomDB(userEmail, duration){ userRecord ->
-            if (userRecord != null){
-                if (userRecord.record.toInt() < score){
-                    binding.highestScore.text = "Highest Score: ${score}"
-                    viewModel.updateDataToRoomDB(userEmail, duration, score.toString())
-                }
-            } else {
-                viewModel.insertDataToRoomDB(userEmail, duration, score.toString())
-                binding.highestScore.text = "Highest Score: $score"
-            }
+    fun checkHighestScore(score: Int){
+        if (score > userHighestScore){
+            binding.highestScore.text = "Highest Score: $score"
+            viewModel.setUserScoreToFirestore(userEmail, duration, score)
         }
     }
 
-
-
-//    fun updateHighScore(score: Int) {
-//        binding.highestScore.text = "Highest Score: ${SharedPreferencesManager.getInstance().getHighestScore(duration.toInt())}"
-//
-//        // Toast.makeText(context, "New Record!", Toast.LENGTH_LONG).show() // This line cannot be accessed directly, needs to be shown from Activity
+//    private fun updateUserRecord(){
+//        viewModel.fetchDataFromRoomDB(userEmail, duration){ userRecord ->
+//            if (userRecord != null){
+//                if (userRecord.record.toInt() < score){
+//                    binding.highestScore.text = "Highest Score: ${score}"
+//                    viewModel.updateDataToRoomDB(userEmail, duration, score.toString())
+//                }
+//            } else {
+//                viewModel.insertDataToRoomDB(userEmail, duration, score.toString())
+//                binding.highestScore.text = "Highest Score: $score"
+//            }
+//        }
 //    }
 
-    fun restartGame() {
-        score = 0
-        binding.scoreText.text = "Score: $score"
 
-        loadGameSettings()
-        startGame()
+    private fun restartGame() {
+        score = 0
+        binding.scoreText.text = "Score: 0"
+        binding.timeText.text = "$duration"
+
+        binding.textCountDownForReady.text = "3"
+        binding.textCountDownForReady.visibility = View.VISIBLE
+
+        startCountDownForReady()
     }
 
+    private fun startCountDownForReady() {
+        object : CountDownTimer((3 * 1000 + 500).toLong(), 1000) {
+
+            override fun onTick(millisUntilFinished: Long) {
+                val formattedTime = String.format("%01d", millisUntilFinished / 1000)
+                binding.textCountDownForReady.text = "$formattedTime"
+            }
+
+            override fun onFinish() {
+                showKotlinView()
+                startCountDownInPlaying()
+
+                binding.textCountDownForReady.visibility = View.GONE
+                binding.gridLayout.visibility = View.VISIBLE
+            }
+        }.start()
+    }
 
     fun setButtonEnabled(boolean: Boolean) {
         if (boolean) {
@@ -164,33 +180,20 @@ class GameManager(private val context: Context, private val userEmail: String, p
     }
 
 
-    fun setListeners(){
-        binding.imageView1.setOnClickListener {
-            increaseScore()
+    private fun setListeners(){
+        for (imageView in imageArray) {
+            imageView.setOnClickListener {
+                increaseScore()
+            }
         }
-        binding.imageView2.setOnClickListener {
-            increaseScore()
+    }
+
+    private fun showNewImageView() {
+        val random = Random()
+        val lastIndex = randomIndex
+        while (randomIndex == lastIndex) {
+            randomIndex = random.nextInt(9)
         }
-        binding.imageView3.setOnClickListener {
-            increaseScore()
-        }
-        binding.imageView4.setOnClickListener {
-            increaseScore()
-        }
-        binding.imageView5.setOnClickListener {
-            increaseScore()
-        }
-        binding.imageView6.setOnClickListener {
-            increaseScore()
-        }
-        binding.imageView7.setOnClickListener {
-            increaseScore()
-        }
-        binding.imageView8.setOnClickListener {
-            increaseScore()
-        }
-        binding.imageView9.setOnClickListener {
-            increaseScore()
-        }
+        imageArray[randomIndex].visibility = View.VISIBLE
     }
 }

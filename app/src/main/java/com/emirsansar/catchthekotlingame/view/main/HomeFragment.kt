@@ -48,7 +48,6 @@ class HomeFragment : Fragment() {
 
         setSpinnerListener()
         setBtnPlayGameListener()
-        setBtnQuitListener()
     }
 
 
@@ -56,7 +55,7 @@ class HomeFragment : Fragment() {
         binding.btnStart.setOnClickListener {
             val intent = Intent(requireContext(), GameActivity::class.java)
             intent.putExtra("DURATION", duration)
-            intent.putExtra("USER_EMAIL", auth.currentUser!!.email)
+            intent.putExtra("USER_EMAIL", currentUser!!.email)
             startActivity(intent)
             //finish()
         }
@@ -72,22 +71,6 @@ class HomeFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 TODO("Not yet implemented")
             }
-        }
-    }
-
-    private fun setBtnQuitListener(){
-        binding.btnQuit.setOnClickListener {
-            AlertDialog.Builder(requireContext())
-                .setTitle("Quit Game")
-                .setMessage("Are you sure you want to exit the game?")
-                .setPositiveButton("Yes") { _, _ ->
-                    auth.signOut()
-                    val intent = Intent(requireContext(), LoginActivity::class.java)
-                    startActivity(intent)
-                    activity?.finish()
-                }
-                .setNegativeButton("No", null)
-                .show()
         }
     }
 

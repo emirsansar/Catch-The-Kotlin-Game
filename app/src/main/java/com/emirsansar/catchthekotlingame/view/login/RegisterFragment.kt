@@ -67,27 +67,10 @@ class RegisterFragment : Fragment() {
                 binding.textError.text = "Şifreleriniz uyuşmuyor. Lütfen gözden geçiriniz."
                 return
             } else {
-
                 auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        val firebaseUser: FirebaseUser? = task.result?.user
-                        val uid = firebaseUser?.uid
-
-                        if (!uid.isNullOrEmpty()) {
-                            val user = hashMapOf("name" to name, "surname" to surname, "email" to email, "uid" to uid)
-
-                            firestore.collection("user_info").document(email)
-                                .set(user).addOnSuccessListener {
-                                    Toast.makeText(requireContext(), "Başarıyla kaydoldunuz!", Toast.LENGTH_LONG).show()
-                                    findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
-                                }.addOnFailureListener { e ->
-                                    Toast.makeText(requireContext(),"H: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
-                                    println(e)
-                                    println()
-                                    println(e.localizedMessage)
-                                }
-
-                        }
+                        setUserInfoCollection(email, name, surname)
+                        //setUserScoresCollection(email, name, surname)
                     } else {
                         Toast.makeText(requireContext(), "Kullanıcı kaydı başarısız oldu: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                     }
@@ -98,6 +81,32 @@ class RegisterFragment : Fragment() {
         }
     }
 
+
+    private fun setUserInfoCollection(email: String, name: String, surname: String){
+        val user = hashMapOf("name" to name, "surname" to surname, "email" to email, "profileImageUrl" to null)
+
+        firestore.collection("user_info").document(email)
+            .set(user).addOnSuccessListener {
+                Toast.makeText(requireContext(), "Başarıyla kaydoldunuz!", Toast.LENGTH_LONG).show()
+                findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+            }.addOnFailureListener { e ->
+                Toast.makeText(requireContext(),"H: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+            }
+    }
+
+//    private fun setUserScoresCollection(email: String, name: String, surname: String){
+//        val user = hashMapOf("score_5sec" to "0", "score_10sec" to "0", "score_20sec" to "0", "fullName" to "$name $surname")
+//
+//        firestore.collection("user_scores").document(email)
+//            .set(user).addOnSuccessListener {
+//            }.addOnFailureListener { e ->
+//            }
+//    }
+
+    private fun setListeners(){
+        setLoginFragmentListener()
+        setBtnRegisterListener()
+    }
 
     private fun setBtnRegisterListener(){
         binding.btnRegister.setOnClickListener {
@@ -110,11 +119,6 @@ class RegisterFragment : Fragment() {
         binding.textLogin.setOnClickListener {
             findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
         }
-    }
-
-    private fun setListeners(){
-        setLoginFragmentListener()
-        setBtnRegisterListener()
     }
 
     private fun isValidEmail(email: String): Boolean {
