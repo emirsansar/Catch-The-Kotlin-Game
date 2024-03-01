@@ -80,4 +80,10 @@ dependencies {
     ksp("androidx.room:room-compiler:2.6.1")
 
     implementation("androidx.room:room-ktx:$room_version")
+
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+
+    implementation("com.squareup.picasso:picasso:2.8")
+
+    implementation("de.hdodenhof:circleimageview:3.1.0")
 }
