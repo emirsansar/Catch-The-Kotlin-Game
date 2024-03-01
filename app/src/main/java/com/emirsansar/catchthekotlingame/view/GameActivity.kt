@@ -23,7 +23,6 @@ class GameActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-//        setGridLayout()
 
         val duration = intent.getStringExtra("DURATION")
         val userEmail = intent.getStringExtra("USER_EMAIL")

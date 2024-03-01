@@ -6,7 +6,9 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import com.emirsansar.catchthekotlingame.databinding.ActivityGameBinding
 import com.emirsansar.catchthekotlingame.view.GameActivity
@@ -17,73 +19,55 @@ class GameManager(private val context: Context, private val userEmail: String, p
 
     private var score: Int = 0
     private var userHighestScore: Int = 0
-    private var randomIndex: Int = 0
-    private var imageArray = ArrayList<ImageView>()
     private var runnable = Runnable {}
     private var handler = Handler(Looper.getMainLooper())
 
     private var viewModel = ViewModelProvider(context as GameActivity)[UserRecordViewModel::class.java]
 
+    private lateinit var kotlinView: ImageView
+
     init {
-        viewModel.getUserScoreFromFirestore(userEmail, duration){
-            binding.highestScore.text = "Highest Score: "+ it.toString()
+        viewModel.getUserScoreFromFirestore(userEmail, duration){ score ->
+            userHighestScore = score!!
+            binding.highestScore.text = "Highest Score: $score"
         }
-        initViews()
+
+        setKotlinView()
     }
 
 
+    private fun setKotlinView(){
+        kotlinView = binding.kotlinImageView
+
+        setKotlinViewListener()
+    }
+
     fun startGame() {
+        binding.textPressToPlay.visibility = View.GONE
         setButtonEnabled(false)
         startCountDownForReady()
     }
 
-    fun initViews() {
-        imageArray.add(binding.imageView1)
-        imageArray.add(binding.imageView2)
-        imageArray.add(binding.imageView3)
-        imageArray.add(binding.imageView4)
-        imageArray.add(binding.imageView5)
-        imageArray.add(binding.imageView6)
-        imageArray.add(binding.imageView7)
-        imageArray.add(binding.imageView8)
-        imageArray.add(binding.imageView9)
-        hideViews()
-        setListeners()
-    }
-
-    fun hideViews() {
-        for (image in imageArray) {
-            image.visibility = View.INVISIBLE
-        }
-    }
 
     fun showKotlinView() {
         runnable = object : Runnable {
             override fun run() {
-                imageArray[randomIndex].visibility = View.INVISIBLE
-
                 val random = Random()
-                var nextRandomIndex = random.nextInt(9)
-                while (nextRandomIndex == randomIndex) {
-                    nextRandomIndex = random.nextInt(9)
-                }
-                randomIndex = nextRandomIndex
 
-                imageArray[randomIndex].visibility = View.VISIBLE
+                val layoutParams = kotlinView.layoutParams as ConstraintLayout.LayoutParams
+                layoutParams.leftMargin = random.nextInt(binding.consLayoutForGridLayout.width - kotlinView.width)
+                layoutParams.topMargin = random.nextInt(binding.consLayoutForGridLayout.height - kotlinView.height)
+                kotlinView.layoutParams = layoutParams
 
                 handler.postDelayed(runnable, 500)
             }
         }
         handler.post(runnable)
-    }
 
-    private fun increaseScore() {
-        score++
-        binding.scoreText.text = "Score: $score"
     }
 
 
-    //CountDownTimer
+
     fun startCountDownInPlaying() {
         object : CountDownTimer((duration.toInt() * 1000 + 500).toLong(), 1000) {
 
@@ -94,8 +78,9 @@ class GameManager(private val context: Context, private val userEmail: String, p
 
             override fun onFinish() {
                 binding.timeText.text = "The game has ended."
+                binding.imgClock.visibility = View.INVISIBLE
+
                 handler.removeCallbacks(runnable)
-                imageArray[randomIndex].visibility = View.INVISIBLE
 
                 checkHighestScore(score)
 
@@ -105,10 +90,41 @@ class GameManager(private val context: Context, private val userEmail: String, p
         }.start()
     }
 
+    private fun startCountDownForReady() {
+        object : CountDownTimer((3 * 1000 + 500).toLong(), 1000) {
+
+            override fun onTick(millisUntilFinished: Long) {
+                val formattedTime = String.format("%01d", millisUntilFinished / 1000)
+                binding.textCountDownForReady.text = "$formattedTime"
+            }
+
+            override fun onFinish() {
+                showKotlinView()
+                startCountDownInPlaying()
+
+                binding.textCountDownForReady.visibility = View.GONE
+                kotlinView.visibility = View.VISIBLE
+            }
+        }.start()
+    }
+
+    private fun increaseScore() {
+        score++
+        binding.scoreText.text = "Score: $score"
+    }
+
     fun checkHighestScore(score: Int){
         if (score > userHighestScore){
             binding.highestScore.text = "Highest Score: $score"
             viewModel.setUserScoreToFirestore(userEmail, duration, score)
+
+            Toast.makeText(context, "Congratulations. New record!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun setKotlinViewListener(){
+        binding.kotlinImageView.setOnClickListener {
+            increaseScore()
         }
     }
 
@@ -129,31 +145,25 @@ class GameManager(private val context: Context, private val userEmail: String, p
 
     private fun restartGame() {
         score = 0
-        binding.scoreText.text = "Score: 0"
-        binding.timeText.text = "$duration"
+        binding.scoreText.text = "Score: $score"
+        binding.timeText.text = "Time: $duration"
 
         binding.textCountDownForReady.text = "3"
         binding.textCountDownForReady.visibility = View.VISIBLE
+        binding.imgClock.visibility = View.VISIBLE
+
+        kotlinView.visibility = View.INVISIBLE
 
         startCountDownForReady()
     }
 
-    private fun startCountDownForReady() {
-        object : CountDownTimer((3 * 1000 + 500).toLong(), 1000) {
-
-            override fun onTick(millisUntilFinished: Long) {
-                val formattedTime = String.format("%01d", millisUntilFinished / 1000)
-                binding.textCountDownForReady.text = "$formattedTime"
-            }
-
-            override fun onFinish() {
-                showKotlinView()
-                startCountDownInPlaying()
-
-                binding.textCountDownForReady.visibility = View.GONE
-                binding.gridLayout.visibility = View.VISIBLE
-            }
-        }.start()
+    private fun resetViews(){
+        score = 0
+        binding.scoreText.text = "Score: $score"
+        binding.imgClock.visibility = View.VISIBLE
+        binding.timeText.text = "Time: $duration"
+        kotlinView.visibility = View.INVISIBLE
+        binding.textPressToPlay.visibility = View.VISIBLE
     }
 
     fun setButtonEnabled(boolean: Boolean) {
@@ -174,26 +184,11 @@ class GameManager(private val context: Context, private val userEmail: String, p
         alert.setPositiveButton("Yes") { _, _ ->
             restartGame()
         }
-        alert.setNegativeButton("No", null)
+        alert.setNegativeButton("No"){ _, _ ->
+            resetViews()
+        }
 
         alert.show()
     }
 
-
-    private fun setListeners(){
-        for (imageView in imageArray) {
-            imageView.setOnClickListener {
-                increaseScore()
-            }
-        }
-    }
-
-    private fun showNewImageView() {
-        val random = Random()
-        val lastIndex = randomIndex
-        while (randomIndex == lastIndex) {
-            randomIndex = random.nextInt(9)
-        }
-        imageArray[randomIndex].visibility = View.VISIBLE
-    }
 }
