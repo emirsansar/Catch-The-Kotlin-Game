@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="15dp"
-            android:fontFamily="@font/opensanssemibold"
+            android:fontFamily="@font/opensansmedium"
             android:padding="3sp"
             android:text="Highest Score: 0"
             android:textAlignment="center"
@@ -38,12 +38,12 @@
             android:id="@+id/timeText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/opensansmedium"
+            android:fontFamily="@font/opensanssemibold"
             android:padding="3sp"
             android:text="Time: 00"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="28sp"
+            android:textSize="26sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -55,12 +55,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:fontFamily="@font/opensanssemibold"
+            android:fontFamily="@font/opensansmedium"
             android:padding="3sp"
             android:text="Score: 0"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="24sp"
+            android:textSize="22sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imgScore"
             app:layout_constraintTop_toBottomOf="@+id/timeText"
@@ -68,36 +68,37 @@
 
         <ImageView
             android:id="@+id/imgClock"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="27dp"
+            android:layout_height="27dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="1dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/timeText"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/timeText"
-            app:layout_constraintVertical_bias="0.123"
+            app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/clock" />
 
         <ImageView
             android:id="@+id/imgScore"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_marginStart="15dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="7dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/timeText"
+            app:layout_constraintTop_toTopOf="@+id/scoreText"
             app:srcCompat="@drawable/score" />
 
         <ImageView
             android:id="@+id/imgHighScore"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="12dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="6dp"
             app:layout_constraintEnd_toStartOf="@+id/highestScore"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/timeText"
+            app:layout_constraintTop_toTopOf="@+id/highestScore"
             app:srcCompat="@drawable/trophy" />
 
 
@@ -122,7 +123,7 @@
             android:layout_marginEnd="20dp"
             android:layout_marginTop="15dp"
             app:layout_constraintWidth_percent="0.9"
-            app:layout_constraintHeight_percent="0.75"
+            app:layout_constraintHeight_percent="0.83"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.473"
@@ -130,6 +131,28 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
             android:background="@drawable/rounded_corner">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/consPlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/kotlinImageView"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/kotlin"
+                    android:visibility="invisible"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+                </ImageView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/textCountDownForReady"
@@ -147,133 +170,23 @@
                 >
             </TextView>
 
-            <androidx.gridlayout.widget.GridLayout
-                android:id="@+id/gridLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"
+            <TextView
+                android:id="@+id/textPressToPlay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Press 'START' to play."
+                android:visibility="visible"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/opensansmedium"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.197"
-                android:paddingEnd="10dp"
-                android:paddingBottom="7dp"
-                android:paddingStart="5dp">
-
-                <ImageView
-                    android:id="@+id/imageView1"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginStart="5dp"
-                    app:layout_column="0"
-                    app:layout_row="0"
-                    app:layout_columnWeight="1"
-                    app:layout_rowWeight="1"
-                    app:srcCompat="@drawable/kotlin" />
-
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginStart="5dp"
-                    app:layout_column="1"
-                    app:layout_row="0"
-                    app:layout_columnWeight="1"
-                    app:layout_rowWeight="1"
-                    app:srcCompat="@drawable/kotlin" />
-
-                <ImageView
-                    android:id="@+id/imageView3"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginStart="5dp"
-                    app:layout_column="2"
-                    app:layout_row="0"
-                    app:layout_columnWeight="1"
-                    app:layout_rowWeight="1"
-                    app:srcCompat="@drawable/kotlin" />
-
-                <ImageView
-                    android:id="@+id/imageView4"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginStart="5dp"
-                    app:layout_column="0"
-                    app:layout_row="1"
-                    app:layout_columnWeight="1"
-                    app:layout_rowWeight="1"
-                    app:srcCompat="@drawable/kotlin" />
-
-                <ImageView
-                    android:id="@+id/imageView5"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginStart="5dp"
-                    app:layout_column="1"
-                    app:layout_row="1"
-                    app:layout_columnWeight="1"
-                    app:layout_rowWeight="1"
-                    app:srcCompat="@drawable/kotlin" />
-
-                <ImageView
-                    android:id="@+id/imageView6"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginStart="5dp"
-                    app:layout_column="2"
-                    app:layout_row="1"
-                    app:layout_columnWeight="1"
-                    app:layout_rowWeight="1"
-                    app:srcCompat="@drawable/kotlin" />
-
-                <ImageView
-                    android:id="@+id/imageView7"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginStart="5dp"
-                    app:layout_column="0"
-                    app:layout_row="2"
-                    app:layout_columnWeight="1"
-                    app:layout_rowWeight="1"
-                    app:srcCompat="@drawable/kotlin" />
-
-                <ImageView
-                    android:id="@+id/imageView8"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginStart="5dp"
-                    app:layout_column="1"
-                    app:layout_row="2"
-                    app:layout_columnWeight="1"
-                    app:layout_rowWeight="1"
-                    app:srcCompat="@drawable/kotlin" />
-
-                <ImageView
-                    android:id="@+id/imageView9"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginStart="5dp"
-                    app:layout_column="2"
-                    app:layout_row="2"
-                    app:layout_columnWeight="1"
-                    app:layout_rowWeight="1"
-                    app:srcCompat="@drawable/kotlin" />
-
-            </androidx.gridlayout.widget.GridLayout>
+                >
+            </TextView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 
 
         <Button
@@ -282,6 +195,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:backgroundTint="@color/blue_4"
+            android:fontFamily="@font/opensansmedium"
             android:text="BACK"
             app:layout_constraintEnd_toStartOf="@+id/btnStartGame"
             app:layout_constraintHorizontal_bias="0.562"
@@ -295,6 +209,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="84dp"
             android:backgroundTint="@color/blue_4"
+            android:fontFamily="@font/opensansmedium"
             android:text="START"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/consLayoutForGridLayout" />
