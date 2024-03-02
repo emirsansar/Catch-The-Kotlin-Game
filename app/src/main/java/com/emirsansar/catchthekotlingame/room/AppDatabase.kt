@@ -4,12 +4,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.emirsansar.catchthekotlingame.model.UserProfile
 import com.emirsansar.catchthekotlingame.model.UserRecord
 
-@Database(entities = [UserRecord::class], version = 1)
+@Database(entities = [UserRecord::class, UserProfile::class], version = 4)
 abstract class AppDatabase: RoomDatabase() {
 
     abstract fun userRecordDAO(): UserRecordDAO
+    abstract fun userProfileDAO(): UserProfileDAO
 
     companion object{
 
