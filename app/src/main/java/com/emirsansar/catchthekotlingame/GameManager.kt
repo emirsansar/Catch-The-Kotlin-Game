@@ -15,10 +15,10 @@ import com.emirsansar.catchthekotlingame.view.GameActivity
 import com.emirsansar.catchthekotlingame.viewmodel.UserRecordViewModel
 import java.util.Random
 
-class GameManager(private val context: Context, private val userEmail: String, private val duration: String, private val binding: ActivityGameBinding) {
+class GameManager(private val context: Context, private val userEmail: String, private val duration: String,
+                  private val highestScore: String, private val binding: ActivityGameBinding) {
 
     private var score: Int = 0
-    private var userHighestScore: Int = 0
     private var runnable = Runnable {}
     private var handler = Handler(Looper.getMainLooper())
 
@@ -27,18 +27,12 @@ class GameManager(private val context: Context, private val userEmail: String, p
     private lateinit var kotlinView: ImageView
 
     init {
-        viewModel.getUserScoreFromFirestore(userEmail, duration){ score ->
-            userHighestScore = score!!
-            binding.highestScore.text = "Highest Score: $score"
-        }
-
         setKotlinView()
     }
 
 
     private fun setKotlinView(){
         kotlinView = binding.kotlinImageView
-
         setKotlinViewListener()
     }
 
@@ -47,7 +41,6 @@ class GameManager(private val context: Context, private val userEmail: String, p
         setButtonEnabled(false)
         startCountDownForReady()
     }
-
 
     fun showKotlinView() {
         runnable = object : Runnable {
@@ -65,7 +58,6 @@ class GameManager(private val context: Context, private val userEmail: String, p
         handler.post(runnable)
 
     }
-
 
 
     fun startCountDownInPlaying() {
@@ -114,7 +106,7 @@ class GameManager(private val context: Context, private val userEmail: String, p
     }
 
     fun checkHighestScore(score: Int){
-        if (score > userHighestScore){
+        if (score > highestScore.toInt()){
             binding.highestScore.text = "Highest Score: $score"
             viewModel.setUserScoreToFirestore(userEmail, duration, score)
 
@@ -127,21 +119,6 @@ class GameManager(private val context: Context, private val userEmail: String, p
             increaseScore()
         }
     }
-
-//    private fun updateUserRecord(){
-//        viewModel.fetchDataFromRoomDB(userEmail, duration){ userRecord ->
-//            if (userRecord != null){
-//                if (userRecord.record.toInt() < score){
-//                    binding.highestScore.text = "Highest Score: ${score}"
-//                    viewModel.updateDataToRoomDB(userEmail, duration, score.toString())
-//                }
-//            } else {
-//                viewModel.insertDataToRoomDB(userEmail, duration, score.toString())
-//                binding.highestScore.text = "Highest Score: $score"
-//            }
-//        }
-//    }
-
 
     private fun restartGame() {
         score = 0

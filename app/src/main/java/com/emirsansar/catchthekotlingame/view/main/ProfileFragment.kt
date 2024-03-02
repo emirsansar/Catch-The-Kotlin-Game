@@ -10,35 +10,29 @@ import android.graphics.ImageDecoder
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import com.emirsansar.catchthekotlingame.R
 import com.emirsansar.catchthekotlingame.databinding.FragmentProfileBinding
-import com.emirsansar.catchthekotlingame.model.UserRecord
 import com.emirsansar.catchthekotlingame.view.login.LoginActivity
+import com.emirsansar.catchthekotlingame.viewmodel.UserProfileViewModel
 import com.emirsansar.catchthekotlingame.viewmodel.UserRecordViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.firestore
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.storage
 import com.squareup.picasso.Picasso
-import java.io.ByteArrayOutputStream
 import java.io.IOException
 
 
@@ -47,24 +41,28 @@ class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
 
     private lateinit var auth: FirebaseAuth
-    private lateinit var firestore: FirebaseFirestore
     private var currentUser : FirebaseUser? = null
-    private lateinit var storage: FirebaseStorage
 
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var permissionLauncher: ActivityResultLauncher<String>
 
     private var selectedBitmap : Bitmap? = null
 
-    private lateinit var viewModel : UserRecordViewModel
+    private lateinit var viewModelUserRecord : UserRecordViewModel
+
+    private lateinit var viewModelUserProfile: UserProfileViewModel
+
+    companion object {
+        var isChangedUserRecord = false
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        firestore = Firebase.firestore
-        storage = Firebase.storage
         auth = Firebase.auth
         currentUser = auth.currentUser
+
+        registerLauncher()
     }
 
     override fun onCreateView(
@@ -78,36 +76,66 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this)[UserRecordViewModel::class.java]
+        viewModelUserRecord = ViewModelProvider(this)[UserRecordViewModel::class.java]
+        viewModelUserProfile = ViewModelProvider(this)[UserProfileViewModel::class.java]
 
         currentUser?.email.toString().let { email ->
-            viewModel.downloadImageFromFirebaseStorage(email){ uri ->
-                Picasso.get().load(uri).into(binding.profilePicture)
-            }
-
-            viewModel.getUserFullName(email){fullName ->
-                binding.textFullName.text = fullName
-            }
-
-            getUserScores(email)
-
-            registerLauncher(currentUser!!.email.toString())
+            setViews(email)
         }
 
         setListeners()
     }
 
 
-    private fun getUserScores(userEmail: String){
-        viewModel.getUserScoreFor10Second(userEmail){ score ->
+    private fun getUserScoresFromFirebase(userEmail: String){
+        viewModelUserRecord.getUserScoreFromFirestore(userEmail, "10"){ score ->
             binding.textScoreTen.text = score.toString()
+
+            viewModelUserRecord.changeUserScoreFor10SecOnRoom(userEmail, score!!)
         }
-        viewModel.getUserScoreFor30Second(userEmail){ score ->
+
+        viewModelUserRecord.getUserScoreFromFirestore(userEmail, "30"){ score ->
             binding.textScoreThirty.text = score.toString()
+
+            viewModelUserRecord.changeUserScoreFor30SecOnRoom(userEmail, score!!)
         }
-        viewModel.getUserScoreFor60Second(userEmail){ score ->
+
+        viewModelUserRecord.getUserScoreFromFirestore(userEmail, "60"){ score ->
             binding.textScoreSixty.text = score.toString()
+
+            viewModelUserRecord.changeUserScoreFor60SecOnRoom(userEmail, score!!)
         }
+    }
+
+    private fun getUserScoresFromRoom(userEmail: String){
+        viewModelUserRecord.fetchDataFromRoomDB(userEmail){ userRecord ->
+            if (userRecord != null){
+                binding.textScoreTen.text = userRecord!!.record_10Second
+                binding.textScoreThirty.text = userRecord.record_30Second
+                binding.textScoreSixty.text = userRecord.record_60Second
+            }
+        }
+    }
+
+    private fun checkUserScoreChange(email: String){
+        if (isChangedUserRecord){
+            getUserScoresFromFirebase(email)
+            isChangedUserRecord = false
+        }
+        else getUserScoresFromRoom(email)
+    }
+
+    private fun setViews(userEmail: String){
+        checkUserScoreChange(userEmail)
+
+        viewModelUserProfile.getUserFullNameFromDB(userEmail){ fullName -> binding.textFullName.text = fullName }
+
+        viewModelUserProfile.getUserProfilePictureUriFromRoomDB(userEmail){ uri ->
+            Picasso.get().load(uri).into(binding.profilePicture)
+        }
+//        viewModel.downloadImageFromFirebaseStorage(userEmail){ uri ->
+//            Picasso.get().load(uri).into(binding.profilePicture)
+//        }
     }
 
     private fun changeProfilePicture(){
@@ -142,7 +170,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun registerLauncher(userEmail: String){
+    private fun registerLauncher(){
         activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK){
                 val intentFromResult = result.data
@@ -155,14 +183,10 @@ class ProfileFragment : Fragment() {
                             selectedBitmap = ImageDecoder.decodeBitmap(source)
 
                             binding.profilePicture.setImageBitmap(selectedBitmap)
-
-                            //viewModel.uploadImageToFirebaseStorage(selectedBitmap!!, userEmail)
                         } else {
                             selectedBitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageData)
 
                             binding.profilePicture.setImageBitmap(selectedBitmap)
-
-                            //viewModel.uploadImageToFirebaseStorage(selectedBitmap!!, userEmail)
                         }
                     } catch (e: IOException) {
                         e.printStackTrace()
@@ -194,7 +218,7 @@ class ProfileFragment : Fragment() {
             val newSurname = inputSurname.text.toString()
 
             if (newName.isNotEmpty() && newSurname.isNotEmpty()){
-                viewModel.changeUserFullName(currentUser!!.email.toString(), newName, newSurname)
+                viewModelUserProfile.changeUserFullName(currentUser!!.email.toString(), newName, newSurname)
                 binding.textFullName.text = "$newName $newSurname"
             } else {
                 Toast.makeText(requireContext(), "Please fill in all fields!", Toast.LENGTH_SHORT).show()
@@ -245,15 +269,18 @@ class ProfileFragment : Fragment() {
     private fun setBtnConfirmListener(){
         binding.btnConfirmPicture.setOnClickListener {
             isClickedEditButton(false)
-            viewModel.uploadImageToFirebaseStorage(selectedBitmap!!, currentUser!!.email.toString())
+
+            viewModelUserProfile.uploadImageToFirebaseStorage(selectedBitmap!!, currentUser!!.email.toString())
+            //viewModelUserProfile.changeUserProfilePictureUriOnDB(currentUser!!.email.toString(), selectedBitmap.toString())
         }
     }
 
     private fun setBtnCancelListener(){
         binding.btnCancelPicture.setOnClickListener {
             isClickedEditButton(false)
-            viewModel.downloadImageFromFirebaseStorage(currentUser!!.email.toString()){
-                Picasso.get().load(it).into(binding.profilePicture)
+
+            viewModelUserProfile.getUserProfilePictureUriFromRoomDB(currentUser!!.email.toString()){ uri ->
+                Picasso.get().load(uri).into(binding.profilePicture)
             }
         }
     }

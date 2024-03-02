@@ -8,9 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import androidx.lifecycle.ViewModelProvider
 import com.emirsansar.catchthekotlingame.databinding.FragmentHomeBinding
 import com.emirsansar.catchthekotlingame.view.GameActivity
 import com.emirsansar.catchthekotlingame.view.login.LoginActivity
+import com.emirsansar.catchthekotlingame.viewmodel.UserRecordViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -27,6 +29,8 @@ class HomeFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
     private var currentUser : FirebaseUser? = null
+
+    private lateinit var viewModel : UserRecordViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +50,8 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
+        viewModel = ViewModelProvider(this)[UserRecordViewModel::class.java]
+
         setSpinnerListener()
         setBtnPlayGameListener()
     }
@@ -53,11 +59,13 @@ class HomeFragment : Fragment() {
 
     private fun setBtnPlayGameListener(){
         binding.btnStart.setOnClickListener {
-            val intent = Intent(requireContext(), GameActivity::class.java)
-            intent.putExtra("DURATION", duration)
-            intent.putExtra("USER_EMAIL", currentUser!!.email)
-            startActivity(intent)
-            //finish()
+            viewModel.getUserScoreFromFirestore(currentUser!!.email.toString(), duration){ score ->
+                val intent = Intent(requireContext(), GameActivity::class.java)
+                intent.putExtra("DURATION", duration)
+                intent.putExtra("SCORE", score.toString())
+                intent.putExtra("USER_EMAIL", currentUser!!.email)
+                startActivity(intent)
+            }
         }
     }
 
@@ -66,7 +74,7 @@ class HomeFragment : Fragment() {
             override fun onItemSelected(
                 parent: AdapterView<*>?, view: View?, position: Int, id: Long
             ) {
-                duration = parent?.getItemAtPosition(position).toString()
+                duration = parent?.getItemAtPosition(position).toString().substringBefore(" ")
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 TODO("Not yet implemented")

@@ -2,10 +2,15 @@ package com.emirsansar.catchthekotlingame.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.emirsansar.catchthekotlingame.R
 import com.emirsansar.catchthekotlingame.databinding.ActivityMainBinding
+import com.emirsansar.catchthekotlingame.view.main.HomeFragment
+import com.emirsansar.catchthekotlingame.view.main.ProfileFragment
+import com.emirsansar.catchthekotlingame.view.main.RankingFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class MainActivity : AppCompatActivity() {
@@ -20,10 +25,38 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+        val bottomNavigationView = binding.bottomMainMenu
+        bottomNavigationView.selectedItemId = R.id.empty
+        bottomNavigationView.setOnItemSelectedListener {
+            when(it.itemId){
+                R.id.profileFragment -> {
+                    replaceFragment(ProfileFragment())
+                    title = "Notification"
+                }
+                R.id.rankingFragment -> {
+                    replaceFragment(RankingFragment())
+                    title = "Setting"
+                }
+            }
+            true
+        }
+        //default fragment
+        replaceFragment(HomeFragment())
 
-        navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentMainContainer) as NavHostFragment
-        NavigationUI.setupWithNavController(binding.bottomMainMenu, navHostFragment!!.navController)
+        setFloatButtonListener()
     }
 
+    private fun replaceFragment(fragment: Fragment){
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragmentMainContainer,fragment)
+            .commit()
+    }
 
+    private fun setFloatButtonListener(){
+        binding.floatButton.setOnClickListener {
+            binding.bottomMainMenu.selectedItemId = R.id.empty
+            replaceFragment(HomeFragment())
+        }
+    }
 }

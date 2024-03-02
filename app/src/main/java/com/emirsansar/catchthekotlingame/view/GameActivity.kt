@@ -23,21 +23,15 @@ class GameActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-
         val duration = intent.getStringExtra("DURATION")
         val userEmail = intent.getStringExtra("USER_EMAIL")
+        val highestScore = intent.getStringExtra("SCORE")
+        binding.highestScore.text = "Highest Score: $highestScore"
 
-        gameManager = GameManager(this, userEmail!!, duration!!, binding)
+        gameManager = GameManager(this, userEmail!!, duration!!, highestScore!!, binding)
 
         setListeners()
     }
-
-//    private fun setGridLayout(){
-//        val layoutParams = binding.gridLayout.layoutParams
-//        layoutParams.width = binding.gridLayout.width
-//        layoutParams.height = binding.gridLayout.width
-//        binding.gridLayout.layoutParams = layoutParams
-//    }
 
     private fun setListeners(){
         binding.btnStartGame.setOnClickListener {

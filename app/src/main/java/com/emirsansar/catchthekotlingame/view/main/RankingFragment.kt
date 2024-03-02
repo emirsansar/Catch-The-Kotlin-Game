@@ -1,8 +1,8 @@
 package com.emirsansar.catchthekotlingame.view.main
 
 import android.graphics.PorterDuff
+import android.graphics.Typeface
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,12 +10,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.emirsansar.catchthekotlingame.R
 import com.emirsansar.catchthekotlingame.adapter.RankAdapter
-import com.emirsansar.catchthekotlingame.databinding.FragmentProfileBinding
 import com.emirsansar.catchthekotlingame.databinding.FragmentRankingBinding
 import com.emirsansar.catchthekotlingame.model.Rank
+import com.emirsansar.catchthekotlingame.viewmodel.RankingViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -25,7 +26,6 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.storage
-import kotlinx.coroutines.tasks.await
 
 class RankingFragment : Fragment() {
 
@@ -43,6 +43,7 @@ class RankingFragment : Fragment() {
     private var colorActive: Int? = null
     private var colorDefault: Int? = null
 
+    private lateinit var viewModel : RankingViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +55,6 @@ class RankingFragment : Fragment() {
 
         colorActive = ContextCompat.getColor(requireActivity(), R.color.btn_active)
         colorDefault = ContextCompat.getColor(requireActivity(), R.color.btn_default)
-
     }
 
     override fun onCreateView(
@@ -68,11 +68,14 @@ class RankingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel = ViewModelProvider(this)[RankingViewModel::class.java]
+
         setRecyclerView()
 
         setButtonListeners()
         setSwipeRefreshLayoutListener()
     }
+
 
     private fun setRecyclerView(){
         binding.recyclerRankView.layoutManager = LinearLayoutManager(context)
@@ -81,29 +84,12 @@ class RankingFragment : Fragment() {
         binding.recyclerRankView.adapter = rankAdapter
     }
 
-    private fun getRankingList(second: String, callback: (List<Rank>) -> Unit) {
-        val rankingList = arrayListOf<Rank>()
-
-        firestore.collection("rank_$second"+"seconds")
-            .orderBy("score", Query.Direction.DESCENDING).limit(15).get()
-                .addOnSuccessListener { documents ->
-                    for (document in documents){
-                        val score = (document.get("score") as? Number)!!.toInt()
-                        val userEmail = document.id
-
-                        val rank = Rank(score, userEmail)
-                        rankingList.add(rank)
-                    }
-                    callback(rankingList)
-            }.addOnFailureListener {
-                callback(emptyList())
-            }
-    }
-
     private fun setSwipeRefreshLayoutListener(){
         binding.swipeRefreshLayout.setOnRefreshListener {
             if (lastSelectedSecond.toInt() != 0)
-                getRankingList(lastSelectedSecond) { rankAdapter!!.updateData(it) }
+                viewModel.getRankingList(lastSelectedSecond) { rankingList ->
+                    rankAdapter!!.updateData(rankingList) }
+
             binding.swipeRefreshLayout.isRefreshing = false
         }
     }
@@ -113,7 +99,7 @@ class RankingFragment : Fragment() {
             changeButtonTint(binding.btn10Second, colorActive!!)
             resetButtonTint(binding.btn10Second)
             lastSelectedSecond = "10"
-            getRankingList("10") {
+            viewModel.getRankingList("10") {
                 rankAdapter?.updateData(it)
                 showRecyclerView()
             }
@@ -123,7 +109,7 @@ class RankingFragment : Fragment() {
             changeButtonTint(binding.btn30Second, colorActive!!)
             resetButtonTint(binding.btn30Second)
             lastSelectedSecond = "30"
-            getRankingList("30") {
+            viewModel.getRankingList("30") {
                 rankAdapter?.updateData(it)
                 showRecyclerView()
             }
@@ -133,7 +119,7 @@ class RankingFragment : Fragment() {
             changeButtonTint(binding.btn60Second, colorActive!!)
             resetButtonTint(binding.btn60Second)
             lastSelectedSecond = "60"
-            getRankingList("60") {
+            viewModel.getRankingList("60") {
                 rankAdapter?.updateData(it)
                 showRecyclerView()
             }
@@ -149,6 +135,7 @@ class RankingFragment : Fragment() {
         for (button in buttons) {
             if (button == clickedButton) {
                 button.setTextColor(resources.getColor(R.color.black))
+                button.textSize = 16f
             }
         }
     }
@@ -159,6 +146,7 @@ class RankingFragment : Fragment() {
             if (button != clickedButton) {
                 changeButtonTint(button, colorDefault!!)
                 button.setTextColor(resources.getColor(R.color.white))
+                button.textSize = 14f
             }
         }
     }
