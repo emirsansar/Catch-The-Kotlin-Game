@@ -1,4 +1,4 @@
-package com.emirsansar.catchthekotlingame
+package com.emirsansar.catchthekotlingame.manager
 
 import android.content.Context
 import android.os.CountDownTimer
