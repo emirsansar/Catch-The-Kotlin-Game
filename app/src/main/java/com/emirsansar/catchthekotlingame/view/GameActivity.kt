@@ -3,13 +3,11 @@ package com.emirsansar.catchthekotlingame.view
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.CountDownTimer
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import androidx.appcompat.app.AlertDialog
-import com.emirsansar.catchthekotlingame.GameManager
+import com.emirsansar.catchthekotlingame.manager.GameManager
 import com.emirsansar.catchthekotlingame.databinding.ActivityGameBinding
+import com.emirsansar.catchthekotlingame.view.main.MainActivity
 
 class GameActivity : AppCompatActivity() {
 

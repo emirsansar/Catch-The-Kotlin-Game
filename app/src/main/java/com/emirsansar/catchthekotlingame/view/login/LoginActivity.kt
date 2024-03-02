@@ -4,10 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.NavigationUI
-import com.emirsansar.catchthekotlingame.R
 import com.emirsansar.catchthekotlingame.databinding.ActivityLoginBinding
-import com.emirsansar.catchthekotlingame.view.MainActivity
+import com.emirsansar.catchthekotlingame.view.main.MainActivity
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth

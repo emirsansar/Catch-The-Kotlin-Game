@@ -13,7 +13,7 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.emirsansar.catchthekotlingame.R
 import com.emirsansar.catchthekotlingame.databinding.FragmentLoginBinding
-import com.emirsansar.catchthekotlingame.view.MainActivity
+import com.emirsansar.catchthekotlingame.view.main.MainActivity
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth

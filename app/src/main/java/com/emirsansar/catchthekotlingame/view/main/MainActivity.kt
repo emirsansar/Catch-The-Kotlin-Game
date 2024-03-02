@@ -1,4 +1,4 @@
-package com.emirsansar.catchthekotlingame.view
+package com.emirsansar.catchthekotlingame.view.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
