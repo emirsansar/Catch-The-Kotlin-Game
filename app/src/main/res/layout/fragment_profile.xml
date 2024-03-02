@@ -4,16 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.main.ProfileFragment">
+    tools:context=".view.main.ProfileFragment"
+    android:background="@color/black">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayoutForSwipe"
+        android:id="@+id/constraintLayoutForTags"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/blue_2"
+        android:background="@color/blue_1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.3"
+        app:layout_constraintHeight_percent="0.29"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ExtraText">
@@ -95,12 +96,12 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/blue_3"
+        android:background="@drawable/gradient_bg_profile"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.7"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayoutForSwipe">
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayoutForTags">
 
         <TextView
             android:id="@+id/textView3"

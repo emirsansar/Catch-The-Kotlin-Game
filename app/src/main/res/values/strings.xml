@@ -2,9 +2,9 @@
     <string name="app_name">Catch The Kotlin Game</string>
 
     <string-array name="durations">
-        <item>10</item>
-        <item>30</item>
-        <item>60</item>
+        <item>10 seconds</item>
+        <item>30 seconds</item>
+        <item>60 seconds</item>
     </string-array>
 
 
