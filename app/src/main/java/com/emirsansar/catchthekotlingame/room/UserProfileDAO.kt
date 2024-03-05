@@ -16,5 +16,8 @@ interface UserProfileDAO {
     suspend fun getUserProfileInfo(userEmail: String): UserProfile?
 
     @Query("UPDATE user_profile SET user_profile_picture_uri = :uri WHERE userEmail = :userEmail")
-    suspend fun setProfilePictureUri(userEmail: String, uri: String)
+    suspend fun updateProfilePictureUri(userEmail: String, uri: String)
+
+    @Query("UPDATE user_profile SET user_full_name = :fullName WHERE userEmail = :userEmail")
+    suspend fun updateProfileFullName(userEmail: String, fullName: String)
 }

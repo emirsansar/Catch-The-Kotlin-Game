@@ -20,7 +20,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import com.emirsansar.catchthekotlingame.R
 import com.emirsansar.catchthekotlingame.databinding.FragmentProfileBinding
@@ -80,35 +79,35 @@ class ProfileFragment : Fragment() {
         viewModelUserProfile = ViewModelProvider(this)[UserProfileViewModel::class.java]
 
         currentUser?.email.toString().let { email ->
-            setViews(email)
+            populateUserProfileViews(email)
         }
 
         setListeners()
     }
 
 
-    private fun getUserScoresFromFirebase(userEmail: String){
+    private fun getUserScoresFromFirestore(userEmail: String){
         viewModelUserRecord.getUserScoreFromFirestore(userEmail, "10"){ score ->
             binding.textScoreTen.text = score.toString()
 
-            viewModelUserRecord.changeUserScoreFor10SecOnRoom(userEmail, score!!)
+            viewModelUserRecord.updateUserScoreFor10SecOnRoom(userEmail, score!!)
         }
 
         viewModelUserRecord.getUserScoreFromFirestore(userEmail, "30"){ score ->
             binding.textScoreThirty.text = score.toString()
 
-            viewModelUserRecord.changeUserScoreFor30SecOnRoom(userEmail, score!!)
+            viewModelUserRecord.updateUserScoreFor30SecOnRoom(userEmail, score!!)
         }
 
         viewModelUserRecord.getUserScoreFromFirestore(userEmail, "60"){ score ->
             binding.textScoreSixty.text = score.toString()
 
-            viewModelUserRecord.changeUserScoreFor60SecOnRoom(userEmail, score!!)
+            viewModelUserRecord.updateUserScoreFor60SecOnRoom(userEmail, score!!)
         }
     }
 
-    private fun getUserScoresFromRoom(userEmail: String){
-        viewModelUserRecord.fetchDataFromRoomDB(userEmail){ userRecord ->
+    private fun getUserScoresFromRoomDB(userEmail: String){
+        viewModelUserRecord.getUserRecordFromRoomDB(userEmail){ userRecord ->
             if (userRecord != null){
                 binding.textScoreTen.text = userRecord!!.record_10Second
                 binding.textScoreThirty.text = userRecord.record_30Second
@@ -117,28 +116,31 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun checkUserScoreChange(email: String){
+    private fun checkAndUpdateUserScoreChange(userEmail: String){
         if (isChangedUserRecord){
-            getUserScoresFromFirebase(email)
+            getUserScoresFromFirestore(userEmail)
             isChangedUserRecord = false
         }
-        else getUserScoresFromRoom(email)
+        else
+            getUserScoresFromRoomDB(userEmail)
     }
 
-    private fun setViews(userEmail: String){
-        checkUserScoreChange(userEmail)
+    private fun populateUserProfileViews(userEmail: String){
+        checkAndUpdateUserScoreChange(userEmail)
 
-        viewModelUserProfile.getUserFullNameFromDB(userEmail){ fullName -> binding.textFullName.text = fullName }
+        viewModelUserProfile.getUserFullNameFromRoomDB(userEmail){ fullName ->
+            binding.textFullName.text = fullName }
 
         viewModelUserProfile.getUserProfilePictureUriFromRoomDB(userEmail){ uri ->
-            Picasso.get().load(uri).into(binding.profilePicture)
+            if (uri.toString() != "")
+                Picasso.get().load(uri).into(binding.profilePicture)
+            else {
+                binding.profilePicture.setImageResource(R.drawable.default_profile_picture)
+            }
         }
-//        viewModel.downloadImageFromFirebaseStorage(userEmail){ uri ->
-//            Picasso.get().load(uri).into(binding.profilePicture)
-//        }
     }
 
-    private fun changeProfilePicture(){
+    private fun selectProfilePictureFromGallery(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if(ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.READ_MEDIA_IMAGES)) {
@@ -205,32 +207,8 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun buildChangeNameDialog(){
-        val nameDialogView = layoutInflater.inflate(R.layout.name_dialog_layout, null)
-        val inputName = nameDialogView.findViewById<EditText>(R.id.inputName)
-        val inputSurname = nameDialogView.findViewById<EditText>(R.id.inputSurname)
 
-        val nameDialogBuilder = AlertDialog.Builder(requireContext())
-        nameDialogBuilder.setTitle("Enter your name.")
-        nameDialogBuilder.setView(nameDialogView)
-        nameDialogBuilder.setPositiveButton("Okay") { dialog, which ->
-            val newName = inputName.text.toString()
-            val newSurname = inputSurname.text.toString()
-
-            if (newName.isNotEmpty() && newSurname.isNotEmpty()){
-                viewModelUserProfile.changeUserFullName(currentUser!!.email.toString(), newName, newSurname)
-                binding.textFullName.text = "$newName $newSurname"
-            } else {
-                Toast.makeText(requireContext(), "Please fill in all fields!", Toast.LENGTH_SHORT).show()
-            }
-        }
-        nameDialogBuilder.setNegativeButton("Cancel") { dialog, which ->
-            dialog.cancel()
-        }
-        nameDialogBuilder.show()
-    }
-
-    private fun isClickedEditButton(boolean: Boolean){
+    private fun changeButtonVisibility(boolean: Boolean){
         if (boolean){
             binding.btnEditProfile.visibility = View.GONE
             binding.btnConfirmPicture.visibility = View.VISIBLE
@@ -252,11 +230,11 @@ class ProfileFragment : Fragment() {
             mainDialog.setItems(options) { dialog, which ->
                 when (which) {
                     0 -> {
-                        buildChangeNameDialog()
+                        showChangeNameDialog()
                     }
                     1 -> {
-                        changeProfilePicture()
-                        isClickedEditButton(true)
+                        selectProfilePictureFromGallery()
+                        changeButtonVisibility(true)
                     }
                 }
             }
@@ -266,21 +244,69 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    private fun showChangeNameDialog(){
+        val nameDialogView = layoutInflater.inflate(R.layout.name_dialog_layout, null)
+        val inputName = nameDialogView.findViewById<EditText>(R.id.inputName)
+        val inputSurname = nameDialogView.findViewById<EditText>(R.id.inputSurname)
+
+        val nameDialogBuilder = AlertDialog.Builder(requireContext())
+        nameDialogBuilder.setTitle("Enter your name.")
+        nameDialogBuilder.setView(nameDialogView)
+        nameDialogBuilder.setPositiveButton("Okay") { dialog, which ->
+            val newName = inputName.text.toString()
+            val newSurname = inputSurname.text.toString()
+
+            if (newName.isNotEmpty() && newSurname.isNotEmpty()){
+                viewModelUserProfile.updateUserFullNameOnFirestore(currentUser!!.email.toString(), newName, newSurname){ boolean ->
+                    if (boolean){
+                        viewModelUserProfile.updateFullNameOnRoomDB(currentUser!!.email.toString(), "$newName $newSurname")
+                        binding.textFullName.text = "$newName $newSurname"
+                    }
+                    else
+                        Toast.makeText(requireContext(),"An error occurred while updating your name.", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(requireContext(), "Please fill in all fields!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        nameDialogBuilder.setNegativeButton("Cancel") { dialog, which ->
+            dialog.cancel()
+        }
+        nameDialogBuilder.show()
+    }
+
     private fun setBtnConfirmListener(){
         binding.btnConfirmPicture.setOnClickListener {
-            isClickedEditButton(false)
+            changeButtonVisibility(false)
 
-            viewModelUserProfile.uploadImageToFirebaseStorage(selectedBitmap!!, currentUser!!.email.toString())
-            //viewModelUserProfile.changeUserProfilePictureUriOnDB(currentUser!!.email.toString(), selectedBitmap.toString())
+            val userEmail = currentUser!!.email.toString()
+
+            viewModelUserProfile.uploadProfilePictureToFirebaseStorage(userEmail, selectedBitmap!!){ uri ->
+                if (uri.toString() != ""){
+                    viewModelUserProfile.updateUserProfilePictureUriInRoomDB(userEmail, uri.toString())
+                } else {
+                    viewModelUserProfile.getUserProfilePictureUriFromRoomDB(userEmail) { uri ->
+                        if (uri.toString() != "")
+                            Picasso.get().load(uri).into(binding.profilePicture)
+                        else
+                            binding.profilePicture.setImageResource(R.drawable.default_profile_picture)
+                    }
+                }
+
+            }
         }
     }
 
     private fun setBtnCancelListener(){
         binding.btnCancelPicture.setOnClickListener {
-            isClickedEditButton(false)
+            changeButtonVisibility(false)
 
-            viewModelUserProfile.getUserProfilePictureUriFromRoomDB(currentUser!!.email.toString()){ uri ->
-                Picasso.get().load(uri).into(binding.profilePicture)
+            viewModelUserProfile.getUserProfilePictureUriFromRoomDB(currentUser!!.email.toString()) { uri ->
+                if (uri.toString() != "")
+                    Picasso.get().load(uri).into(binding.profilePicture)
+                else
+                    binding.profilePicture.setImageResource(R.drawable.default_profile_picture)
             }
         }
     }

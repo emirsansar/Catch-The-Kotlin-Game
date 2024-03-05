@@ -1,28 +1,17 @@
 package com.emirsansar.catchthekotlingame.viewmodel
 
 import android.app.Application
-import android.graphics.Bitmap
-import android.net.Uri
-import android.util.Log
-import android.widget.Toast
-import androidx.lifecycle.MutableLiveData
-import com.emirsansar.catchthekotlingame.R
 import com.emirsansar.catchthekotlingame.model.UserRecord
 import com.emirsansar.catchthekotlingame.room.AppDatabase
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.firestore
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.storage
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
 
 class UserRecordViewModel(application: Application): BaseViewModel(application) {
 
     private val firestore = Firebase.firestore
 
-    fun fetchDataFromRoomDB(userEmail: String, callback: (UserRecord?) -> Unit) {
+    fun getUserRecordFromRoomDB(userEmail: String, callback: (UserRecord?) -> Unit) {
         launch {
             val record = AppDatabase(getApplication()).userRecordDAO().getUserRecord(userEmail).also {
             }
@@ -36,19 +25,19 @@ class UserRecordViewModel(application: Application): BaseViewModel(application) 
         }
     }
 
-    fun changeUserScoreFor10SecOnRoom(userEmail: String, score: Int){
+    fun updateUserScoreFor10SecOnRoom(userEmail: String, score: Int){
         launch {
             AppDatabase(getApplication()).userRecordDAO().updateUserRecordFor10Sec(userEmail, score.toString())
         }
     }
 
-    fun changeUserScoreFor30SecOnRoom(userEmail: String, score: Int){
+    fun updateUserScoreFor30SecOnRoom(userEmail: String, score: Int){
         launch {
             AppDatabase(getApplication()).userRecordDAO().updateUserRecordFor30Sec(userEmail, score.toString())
         }
     }
 
-    fun changeUserScoreFor60SecOnRoom(userEmail: String, score: Int){
+    fun updateUserScoreFor60SecOnRoom(userEmail: String, score: Int){
         launch {
             AppDatabase(getApplication()).userRecordDAO().updateUserRecordFor60Sec(userEmail, score.toString())
         }
@@ -69,23 +58,35 @@ class UserRecordViewModel(application: Application): BaseViewModel(application) 
         }
     }
 
-    fun setUserScoreToFirestore(userEmail: String, duration: String, score: Int){
+    fun updateUserScoreToFirestore(userEmail: String, duration: String, score: Int, callback: (Boolean?) -> Unit){
         launch {
             val userRef = firestore.collection("rank_$duration"+"seconds").document(userEmail)
 
             userRef.get().addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
                     userRef.update("score", score)
-                        .addOnSuccessListener { println("Başarılı.") }
-                        .addOnFailureListener { e -> e.printStackTrace() }
-                }
-                else {
+                        .addOnSuccessListener {
+                            callback(true)
+                        }
+                        .addOnFailureListener { e ->
+                            e.printStackTrace()
+                            callback(false)
+                        }
+                } else {
                     val userData = hashMapOf("score" to score)
                     userRef.set(userData)
-                        .addOnSuccessListener { println("Başarılı.") }
-                        .addOnFailureListener { e -> e.printStackTrace() }
+                        .addOnSuccessListener {
+                            callback(true)
+                        }
+                        .addOnFailureListener { e ->
+                            e.printStackTrace()
+                            callback(false)
+                        }
                 }
-            }.addOnFailureListener { e -> e.printStackTrace() }
+            }.addOnFailureListener { e ->
+                e.printStackTrace()
+                callback(false)
+            }
         }
     }
 

@@ -9,12 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.emirsansar.catchthekotlingame.R
 import com.emirsansar.catchthekotlingame.databinding.FragmentRegisterBinding
+import com.emirsansar.catchthekotlingame.model.UserProfile
+import com.emirsansar.catchthekotlingame.model.UserRecord
+import com.emirsansar.catchthekotlingame.viewmodel.UserProfileViewModel
+import com.emirsansar.catchthekotlingame.viewmodel.UserRecordViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
@@ -26,6 +30,9 @@ class RegisterFragment : Fragment() {
 
     private lateinit var auth : FirebaseAuth
     private lateinit var firestore : FirebaseFirestore
+
+    private lateinit var viewModelUserProfile: UserProfileViewModel
+    private lateinit var viewModelUserRecord: UserRecordViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +52,9 @@ class RegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModelUserProfile = ViewModelProvider(this)[UserProfileViewModel::class.java]
+        viewModelUserRecord = ViewModelProvider(this)[UserRecordViewModel::class.java]
 
         setListeners()
     }
@@ -69,8 +79,14 @@ class RegisterFragment : Fragment() {
             } else {
                 auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        setUserInfoCollection(email, name, surname)
-                        //setUserScoresCollection(email, name, surname)
+                        viewModelUserProfile.insertUserProfileToFirestore(email, name, surname){ result ->
+                            if (result){
+                                viewModelUserRecord.insertDataToRoomDB(UserRecord(email, "0", "0", "0"))
+                                viewModelUserProfile.saveUserProfileToRoomDB(UserProfile(email, "$name $surname", ""))
+                                findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+                            }
+                        }
+
                     } else {
                         Toast.makeText(requireContext(), "Kullanıcı kaydı başarısız oldu: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                     }
@@ -81,27 +97,6 @@ class RegisterFragment : Fragment() {
         }
     }
 
-
-    private fun setUserInfoCollection(email: String, name: String, surname: String){
-        val user = hashMapOf("name" to name, "surname" to surname, "email" to email, "profileImageUrl" to null)
-
-        firestore.collection("user_info").document(email)
-            .set(user).addOnSuccessListener {
-                Toast.makeText(requireContext(), "Başarıyla kaydoldunuz!", Toast.LENGTH_LONG).show()
-                findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
-            }.addOnFailureListener { e ->
-                Toast.makeText(requireContext(),"H: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
-            }
-    }
-
-//    private fun setUserScoresCollection(email: String, name: String, surname: String){
-//        val user = hashMapOf("score_5sec" to "0", "score_10sec" to "0", "score_20sec" to "0", "fullName" to "$name $surname")
-//
-//        firestore.collection("user_scores").document(email)
-//            .set(user).addOnSuccessListener {
-//            }.addOnFailureListener { e ->
-//            }
-//    }
 
     private fun setListeners(){
         setLoginFragmentListener()

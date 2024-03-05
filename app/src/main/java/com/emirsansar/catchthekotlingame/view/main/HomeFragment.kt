@@ -1,6 +1,5 @@
 package com.emirsansar.catchthekotlingame.view.main
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,8 +9,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import androidx.lifecycle.ViewModelProvider
 import com.emirsansar.catchthekotlingame.databinding.FragmentHomeBinding
-import com.emirsansar.catchthekotlingame.view.GameActivity
-import com.emirsansar.catchthekotlingame.view.login.LoginActivity
+import com.emirsansar.catchthekotlingame.view.game.GameActivity
 import com.emirsansar.catchthekotlingame.viewmodel.UserRecordViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -59,11 +57,21 @@ class HomeFragment : Fragment() {
 
     private fun setBtnPlayGameListener(){
         binding.btnStart.setOnClickListener {
-            viewModel.getUserScoreFromFirestore(currentUser!!.email.toString(), duration){ score ->
-                val intent = Intent(requireContext(), GameActivity::class.java)
-                intent.putExtra("DURATION", duration)
-                intent.putExtra("SCORE", score.toString())
-                intent.putExtra("USER_EMAIL", currentUser!!.email)
+            val userEmail = currentUser!!.email.toString()
+
+            val intent = Intent(requireContext(), GameActivity::class.java)
+            intent.putExtra("DURATION", duration)
+            intent.putExtra("USER_EMAIL", userEmail)
+
+            viewModel.getUserRecordFromRoomDB(userEmail) { userRecord ->
+                when (duration){
+                    "10" -> {
+                        intent.putExtra("HIGHEST_SCORE", userRecord!!.record_10Second.toInt())}
+                    "30" -> {
+                        intent.putExtra("HIGHEST_SCORE", userRecord!!.record_30Second.toInt())}
+                    else -> {
+                        intent.putExtra("HIGHEST_SCORE", userRecord!!.record_60Second.toInt())}
+                }
                 startActivity(intent)
             }
         }

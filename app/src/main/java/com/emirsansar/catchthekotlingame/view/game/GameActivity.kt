@@ -1,4 +1,4 @@
-package com.emirsansar.catchthekotlingame.view
+package com.emirsansar.catchthekotlingame.view.game
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import com.emirsansar.catchthekotlingame.manager.GameManager
 import com.emirsansar.catchthekotlingame.databinding.ActivityGameBinding
 import com.emirsansar.catchthekotlingame.view.main.MainActivity
+import com.emirsansar.catchthekotlingame.view.main.ProfileFragment
 
 class GameActivity : AppCompatActivity() {
 
@@ -23,10 +24,10 @@ class GameActivity : AppCompatActivity() {
 
         val duration = intent.getStringExtra("DURATION")
         val userEmail = intent.getStringExtra("USER_EMAIL")
-        val highestScore = intent.getStringExtra("SCORE")
+        val highestScore: Int = intent.getIntExtra("HIGHEST_SCORE", 0)
         binding.highestScore.text = "Highest Score: $highestScore"
 
-        gameManager = GameManager(this, userEmail!!, duration!!, highestScore!!, binding)
+        gameManager = GameManager(this, userEmail!!, duration!!, highestScore, binding)
 
         setListeners()
     }
@@ -34,6 +35,7 @@ class GameActivity : AppCompatActivity() {
     private fun setListeners(){
         binding.btnStartGame.setOnClickListener {
             binding.textCountDownForReady.visibility = View.VISIBLE
+            ProfileFragment.isChangedUserRecord = true
             gameManager.startGame()
         }
 

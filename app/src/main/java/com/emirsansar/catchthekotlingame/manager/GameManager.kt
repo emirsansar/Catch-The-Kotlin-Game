@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
+import android.provider.ContactsContract.Profile
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
@@ -11,12 +12,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import com.emirsansar.catchthekotlingame.databinding.ActivityGameBinding
-import com.emirsansar.catchthekotlingame.view.GameActivity
+import com.emirsansar.catchthekotlingame.view.game.GameActivity
+import com.emirsansar.catchthekotlingame.view.main.ProfileFragment
 import com.emirsansar.catchthekotlingame.viewmodel.UserRecordViewModel
 import java.util.Random
 
 class GameManager(private val context: Context, private val userEmail: String, private val duration: String,
-                  private val highestScore: String, private val binding: ActivityGameBinding) {
+                  private var highestScore: Int, private val binding: ActivityGameBinding) {
 
     private var score: Int = 0
     private var runnable = Runnable {}
@@ -27,22 +29,29 @@ class GameManager(private val context: Context, private val userEmail: String, p
     private lateinit var kotlinView: ImageView
 
     init {
-        setKotlinView()
+        initializeKotlinView()
+        initializeUIElements()
     }
 
-
-    private fun setKotlinView(){
+    private fun initializeKotlinView(){
         kotlinView = binding.kotlinImageView
         setKotlinViewListener()
     }
 
-    fun startGame() {
-        binding.textPressToPlay.visibility = View.GONE
-        setButtonEnabled(false)
-        startCountDownForReady()
+    private fun initializeUIElements(){
+        binding.highestScore.text = "Highest Score: $highestScore"
+        binding.timeText.text = "Time: $duration"
     }
 
-    fun showKotlinView() {
+    fun startGame() {
+        binding.textPressToPlay.visibility = View.GONE
+        setButtonsEnabled(false)
+        startReadyCountdown()
+
+        ProfileFragment.isChangedUserRecord = true
+    }
+
+    fun moveKotlinViewRandomly() {
         runnable = object : Runnable {
             override fun run() {
                 val random = Random()
@@ -60,7 +69,7 @@ class GameManager(private val context: Context, private val userEmail: String, p
     }
 
 
-    fun startCountDownInPlaying() {
+    fun startPlayingCountdown() {
         object : CountDownTimer((duration.toInt() * 1000 + 500).toLong(), 1000) {
 
             override fun onTick(millisUntilFinished: Long) {
@@ -71,18 +80,19 @@ class GameManager(private val context: Context, private val userEmail: String, p
             override fun onFinish() {
                 binding.timeText.text = "The game has ended."
                 binding.imgClock.visibility = View.INVISIBLE
+                binding.kotlinImageView.visibility = View.INVISIBLE
 
                 handler.removeCallbacks(runnable)
 
-                checkHighestScore(score)
+                updateHighestScoreIfNeeded(score)
 
-                setButtonEnabled(true)
+                setButtonsEnabled(true)
                 showGameOverDialog()
             }
         }.start()
     }
 
-    private fun startCountDownForReady() {
+    private fun startReadyCountdown() {
         object : CountDownTimer((3 * 1000 + 500).toLong(), 1000) {
 
             override fun onTick(millisUntilFinished: Long) {
@@ -91,8 +101,8 @@ class GameManager(private val context: Context, private val userEmail: String, p
             }
 
             override fun onFinish() {
-                showKotlinView()
-                startCountDownInPlaying()
+                moveKotlinViewRandomly()
+                startPlayingCountdown()
 
                 binding.textCountDownForReady.visibility = View.GONE
                 kotlinView.visibility = View.VISIBLE
@@ -105,10 +115,20 @@ class GameManager(private val context: Context, private val userEmail: String, p
         binding.scoreText.text = "Score: $score"
     }
 
-    fun checkHighestScore(score: Int){
-        if (score > highestScore.toInt()){
+    fun updateHighestScoreIfNeeded(score: Int){
+        if (score > highestScore){
+            highestScore = score
             binding.highestScore.text = "Highest Score: $score"
-            viewModel.setUserScoreToFirestore(userEmail, duration, score)
+
+            viewModel.updateUserScoreToFirestore(userEmail, duration, score){ boolean ->
+                if (boolean == true) {
+                    when (duration){
+                        "10" -> { viewModel.updateUserScoreFor10SecOnRoom(userEmail, score) }
+                        "30" -> { viewModel.updateUserScoreFor10SecOnRoom(userEmail, score) }
+                        else -> { viewModel.updateUserScoreFor60SecOnRoom(userEmail, score) }
+                    }
+                }
+            }
 
             Toast.makeText(context, "Congratulations. New record!", Toast.LENGTH_SHORT).show()
         }
@@ -120,7 +140,7 @@ class GameManager(private val context: Context, private val userEmail: String, p
         }
     }
 
-    private fun restartGame() {
+    private fun resetGame() {
         score = 0
         binding.scoreText.text = "Score: $score"
         binding.timeText.text = "Time: $duration"
@@ -131,10 +151,10 @@ class GameManager(private val context: Context, private val userEmail: String, p
 
         kotlinView.visibility = View.INVISIBLE
 
-        startCountDownForReady()
+        startReadyCountdown()
     }
 
-    private fun resetViews(){
+    private fun resetUIElements(){
         score = 0
         binding.scoreText.text = "Score: $score"
         binding.imgClock.visibility = View.VISIBLE
@@ -143,7 +163,7 @@ class GameManager(private val context: Context, private val userEmail: String, p
         binding.textPressToPlay.visibility = View.VISIBLE
     }
 
-    fun setButtonEnabled(boolean: Boolean) {
+    fun setButtonsEnabled(boolean: Boolean) {
         if (boolean) {
             binding.btnStartGame.isEnabled = true
             binding.btnBack.isEnabled = true
@@ -159,10 +179,10 @@ class GameManager(private val context: Context, private val userEmail: String, p
         alert.setMessage("Restart the game?")
 
         alert.setPositiveButton("Yes") { _, _ ->
-            restartGame()
+            resetGame()
         }
         alert.setNegativeButton("No"){ _, _ ->
-            resetViews()
+            resetUIElements()
         }
 
         alert.show()
