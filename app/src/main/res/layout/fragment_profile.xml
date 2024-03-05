@@ -19,23 +19,11 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ExtraText">
 
-        <ImageView
-            android:id="@+id/btnEditProfile"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="15dp"
-            android:src="@drawable/baseline_edit_24"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:alpha="0.75"
-            />
-
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profile_picture"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            app:civ_border_color="@color/white"
+            android:id="@+id/viewProfilePicture"
+            android:layout_width="125dp"
+            android:layout_height="125dp"
+            app:civ_border_color="@color/black"
             app:civ_border_width="3dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -50,47 +38,58 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/opensansbold"
             android:textColor="@color/black"
-            android:textSize="24sp"
+            android:textSize="25sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_picture" />
+            app:layout_constraintTop_toBottomOf="@+id/viewProfilePicture" />
 
-        <ImageView
-            android:id="@+id/btnLogOut"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="15dp"
-            android:src="@drawable/icon_log_out"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabMore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="17dp"
+            android:clickable="true"
+            android:src="@drawable/baseline_more_horiz_24"
+            android:tint="#000000"
+            app:backgroundTint="@color/blue_2"
+            app:fabSize="auto"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.045"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:alpha="0.8"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/btnConfirmPicture"
-            android:src="@drawable/baseline_done_24"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="15dp"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabEditProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:src="@drawable/baseline_edit_24"
             android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:alpha="0.75"/>
+            app:backgroundTint="@color/btn_active"
+            app:fabSize="mini"
+            android:layout_marginStart="2dp"
+            app:layout_constraintEnd_toEndOf="@+id/fabMore"
+            app:layout_constraintHorizontal_bias="0.125"
+            app:layout_constraintStart_toStartOf="@+id/fabMore"
+            app:layout_constraintTop_toBottomOf="@+id/fabMore" />
 
-        <ImageView
-            android:id="@+id/btnCancelPicture"
-            android:src="@drawable/baseline_cancel_24"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="15dp"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabLogOut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:clickable="true"
+            android:src="@drawable/icon_log_out"
             android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnConfirmPicture"
-            android:alpha="0.75"/>
+            app:backgroundTint="@color/btn_active"
+            app:fabSize="mini"
+            app:layout_constraintEnd_toEndOf="@+id/fabEditProfile"
+            app:layout_constraintHorizontal_bias="0.041"
+            app:layout_constraintStart_toStartOf="@+id/fabEditProfile"
+            app:layout_constraintTop_toBottomOf="@+id/fabEditProfile" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -112,7 +111,7 @@
             android:fontFamily="@font/opensanssemibold"
             android:text="Records:"
             android:textColor="@color/black"
-            android:textSize="20sp"
+            android:textSize="22sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.228"
             app:layout_constraintStart_toStartOf="parent"

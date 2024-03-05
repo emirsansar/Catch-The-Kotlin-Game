@@ -161,8 +161,8 @@
                             android:textColor="@color/black"
                             android:textSize="18sp"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.382"
+                            app:layout_constraintEnd_toStartOf="@+id/textView10"
+                            app:layout_constraintHorizontal_bias="0.565"
                             app:layout_constraintStart_toEndOf="@+id/textView8"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintVertical_bias="0.538" />
@@ -171,21 +171,29 @@
                             android:id="@+id/textView10"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="30dp"
                             android:fontFamily="@font/opensanssemibold"
                             android:text="Score"
                             android:textColor="@color/black"
                             android:textSize="18sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.902"
-                            app:layout_constraintStart_toEndOf="@+id/textView9"
+                            app:layout_constraintHorizontal_bias="0.888"
+                            app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_bias="0.523" />
+                            app:layout_constraintVertical_bias="0.538" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="@+id/swipeRefreshLayout"
+                    app:layout_constraintEnd_toEndOf="@+id/swipeRefreshLayout"
+                    app:layout_constraintStart_toStartOf="@+id/swipeRefreshLayout"
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayoutForTags" />
 
                 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                     android:id="@+id/swipeRefreshLayout"
@@ -193,6 +201,7 @@
                     android:layout_height="0dp"
                     android:background="@color/blue_2"
                     android:visibility="invisible"
+                    android:paddingBottom="6dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"

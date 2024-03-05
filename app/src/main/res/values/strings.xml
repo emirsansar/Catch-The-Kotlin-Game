@@ -7,5 +7,8 @@
         <item>60 seconds</item>
     </string-array>
 
+    <string name="full_name">%s %s</string>
+
+    <string name="rank_placeholder">%d</string>
 
 </resources>
