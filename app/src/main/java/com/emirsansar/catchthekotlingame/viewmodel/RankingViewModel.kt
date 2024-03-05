@@ -10,11 +10,11 @@ class RankingViewModel(application: Application): BaseViewModel(application) {
 
     private val firestore = Firebase.firestore
 
-    fun getRankingList(second: String, callback: (List<Rank>) -> Unit) {
+    fun getRankingList(second: String, callback: (List<Rank>, Boolean) -> Unit) {
         val rankingList = arrayListOf<Rank>()
 
         firestore.collection("rank_$second"+"seconds")
-            .orderBy("score", Query.Direction.DESCENDING).limit(15).get()
+            .orderBy("score", Query.Direction.DESCENDING).limit(10).get()
             .addOnSuccessListener { documents ->
                 for (document in documents){
                     val score = (document.get("score") as? Number)!!.toInt()
@@ -23,9 +23,9 @@ class RankingViewModel(application: Application): BaseViewModel(application) {
                     val rank = Rank(score, userEmail)
                     rankingList.add(rank)
                 }
-                callback(rankingList)
+                callback(rankingList, true)
             }.addOnFailureListener {
-                callback(emptyList())
+                callback(emptyList(), false)
             }
     }
 }

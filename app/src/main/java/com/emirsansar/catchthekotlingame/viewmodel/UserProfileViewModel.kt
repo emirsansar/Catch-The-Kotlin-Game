@@ -20,13 +20,6 @@ class UserProfileViewModel(application: Application): BaseViewModel(application)
     private val storage = Firebase.storage
 
 
-    fun getUserProfileInfoFromRoomDatabase(userEmail: String, callback: (UserProfile?) -> Unit?){
-        launch {
-            val userProfile = AppDatabase(getApplication()).userProfileDAO().getUserProfileInfo(userEmail)
-            callback(userProfile)
-        }
-    }
-
     fun saveUserProfileToRoomDB(userProfile: UserProfile){
         launch {
             AppDatabase(getApplication()).userProfileDAO().insertUserProfileInfo(userProfile)
@@ -46,7 +39,14 @@ class UserProfileViewModel(application: Application): BaseViewModel(application)
         }
     }
 
-    fun uploadProfilePictureToFirebaseStorage(userEmail: String, bitmap: Bitmap, callback: (Uri) -> Unit){
+    fun getUserProfileInfoFromRoomDatabase(userEmail: String, callback: (UserProfile?) -> Unit?){
+        launch {
+            val userProfile = AppDatabase(getApplication()).userProfileDAO().getUserProfileInfo(userEmail)
+            callback(userProfile)
+        }
+    }
+
+    fun uploadProfilePictureToFirebaseStorage(userEmail: String, bitmap: Bitmap, callback: (Uri, Boolean) -> Unit){
         launch {
             val storageReference = storage.reference
             val imageRef = storageReference.child("profile_images/$userEmail.jpg")
@@ -64,11 +64,11 @@ class UserProfileViewModel(application: Application): BaseViewModel(application)
                     userRef.update("profileImageUrl", downloadUrl)
                         .addOnSuccessListener {
                             Toast.makeText(getApplication(), "Upload successful.", Toast.LENGTH_SHORT).show()
-                            callback(uri)
+                            callback(uri, true)
                         }
                         .addOnFailureListener { exception ->
                             Toast.makeText(getApplication(), "Error updating profile image: ${exception.message}", Toast.LENGTH_SHORT).show()
-                            callback(uri)
+                            callback(uri, true)
                         }
                 }
             }.addOnFailureListener { exception ->
@@ -84,8 +84,8 @@ class UserProfileViewModel(application: Application): BaseViewModel(application)
 
             imageRef.downloadUrl.addOnSuccessListener { uri ->
                 callback(uri)
-            }.addOnFailureListener {
-                println("${it.localizedMessage}")
+            }.addOnFailureListener { e->
+                Log.e("HATA", "Hata oluştu: ${e.localizedMessage}", e)
             }
         }
     }
@@ -96,12 +96,27 @@ class UserProfileViewModel(application: Application): BaseViewModel(application)
 
             firestore.collection("user_info").document(email)
                 .set(user).addOnSuccessListener {
-                    Toast.makeText(getApplication(), "Başarıyla kaydoldunuz!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(getApplication(), "You have successfully registered.", Toast.LENGTH_LONG).show()
                     callback(true)
                 }.addOnFailureListener { e ->
                     Toast.makeText(getApplication(),"H: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
                     callback(false)
                 }
+        }
+    }
+
+    fun removeProfilePictureFromStorage(email: String, callback: (Boolean) -> Unit){
+        launch {
+            val photoRef = storage.reference.child("profile_images/$email.jpg")
+
+            photoRef.delete().addOnSuccessListener {
+                Toast.makeText(getApplication(), "Profile picture is removed successfully!", Toast.LENGTH_LONG).show()
+                callback(true)
+            }.addOnFailureListener { e ->
+                Toast.makeText(getApplication(), "Profile photo could not be removed!", Toast.LENGTH_LONG).show()
+                callback(false)
+                Log.e("HATA", "Hata oluştu: ${e.localizedMessage}", e)
+            }
         }
     }
 

@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.emirsansar.catchthekotlingame.R
 import com.emirsansar.catchthekotlingame.databinding.RowRankBinding
 import com.emirsansar.catchthekotlingame.model.Rank
-import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
@@ -16,10 +15,11 @@ class RankAdapter(private val rankList: ArrayList<Rank>, private var storage: Fi
     class RowHolder(val binding: RowRankBinding) : RecyclerView.ViewHolder(binding.root) {
     }
 
-
     fun updateData(newList: List<Rank>) {
-        rankList.clear()
-        rankList.addAll(newList)
+        rankList.apply {
+            clear()
+            addAll(newList)
+        }
         notifyDataSetChanged()
     }
 
@@ -36,18 +36,18 @@ class RankAdapter(private val rankList: ArrayList<Rank>, private var storage: Fi
         val currentRank = rankList[position]
 
         var userFullName: String?
-        val userScore = currentRank.userScore
         val userEmail = currentRank.userEmail
+        val userScore = currentRank.userScore
+
+        holder.binding.textRank.text = (position+1).toString()
+        holder.binding.textScore.text = userScore.toString()
 
         firestore.collection("user_info").document(userEmail).get().addOnSuccessListener { docSnapshot ->
             val name = docSnapshot.getString("name")
             val surname = docSnapshot.getString("surname")
-
             userFullName = "$name $surname"
 
-            holder.binding.textRank.text = (position+1).toString()
             holder.binding.textFullname.text = userFullName
-            holder.binding.textScore.text = userScore.toString()
 
             if (position < 3){
                 val color = when (position){
@@ -65,7 +65,6 @@ class RankAdapter(private val rankList: ArrayList<Rank>, private var storage: Fi
                 holder.binding.profilePicture.setImageResource(R.drawable.default_profile_picture)
             }
         }
-
 
     }
 

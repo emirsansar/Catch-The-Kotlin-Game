@@ -37,13 +37,13 @@ class RankingFragment : Fragment() {
     private lateinit var storage: FirebaseStorage
 
     private var rankAdapter: RankAdapter? = null
+    private lateinit var viewModel : RankingViewModel
 
     private var lastSelectedSecond: String = "0"
-
     private var colorActive: Int? = null
     private var colorDefault: Int? = null
 
-    private lateinit var viewModel : RankingViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,41 +87,34 @@ class RankingFragment : Fragment() {
     private fun setSwipeRefreshLayoutListener(){
         binding.swipeRefreshLayout.setOnRefreshListener {
             if (lastSelectedSecond.toInt() != 0)
-                viewModel.getRankingList(lastSelectedSecond) { rankingList ->
-                    rankAdapter!!.updateData(rankingList) }
+                viewModel.getRankingList(lastSelectedSecond) { rankingList, isSuccess ->
+                    if (isSuccess)
+                        rankAdapter!!.updateData(rankingList) }
 
             binding.swipeRefreshLayout.isRefreshing = false
         }
     }
 
     private fun setButtonListeners() {
-        binding.btn10Second.setOnClickListener {
-            changeButtonTint(binding.btn10Second, colorActive!!)
-            resetButtonTint(binding.btn10Second)
-            lastSelectedSecond = "10"
-            viewModel.getRankingList("10") {
-                rankAdapter?.updateData(it)
-                showRecyclerView()
-            }
-        }
+        val buttons = listOf(binding.btn10Second, binding.btn30Second, binding.btn60Second)
 
-        binding.btn30Second.setOnClickListener {
-            changeButtonTint(binding.btn30Second, colorActive!!)
-            resetButtonTint(binding.btn30Second)
-            lastSelectedSecond = "30"
-            viewModel.getRankingList("30") {
-                rankAdapter?.updateData(it)
-                showRecyclerView()
-            }
-        }
+        buttons.forEach { button ->
+            button.setOnClickListener {
+                binding.textNoChoice.visibility = View.GONE
+                binding.swipeRefreshLayout.visibility = View.INVISIBLE
+                binding.progressBar.visibility = View.VISIBLE
+                changeButtonTint(button, colorActive!!)
+                resetButtonTint(button)
 
-        binding.btn60Second.setOnClickListener {
-            changeButtonTint(binding.btn60Second, colorActive!!)
-            resetButtonTint(binding.btn60Second)
-            lastSelectedSecond = "60"
-            viewModel.getRankingList("60") {
-                rankAdapter?.updateData(it)
-                showRecyclerView()
+                lastSelectedSecond = button.text.toString().substringBefore(" ")
+
+                viewModel.getRankingList(lastSelectedSecond) { rankingList, isSuccess ->
+                    if (isSuccess) {
+                        rankAdapter!!.updateData(rankingList)
+                        showRecyclerView()
+                        binding.progressBar.visibility = View.INVISIBLE
+                    }
+                }
             }
         }
     }
@@ -155,4 +148,5 @@ class RankingFragment : Fragment() {
         binding.textNoChoice.visibility = View.GONE
         binding.swipeRefreshLayout.visibility = View.VISIBLE
     }
+
 }

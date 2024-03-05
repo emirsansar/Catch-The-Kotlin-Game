@@ -14,6 +14,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -41,6 +43,7 @@ class ProfileFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
     private var currentUser : FirebaseUser? = null
+    private lateinit var userEmail: String
 
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var permissionLauncher: ActivityResultLauncher<String>
@@ -48,8 +51,14 @@ class ProfileFragment : Fragment() {
     private var selectedBitmap : Bitmap? = null
 
     private lateinit var viewModelUserRecord : UserRecordViewModel
-
     private lateinit var viewModelUserProfile: UserProfileViewModel
+
+    private val fromRotate: Animation by lazy { AnimationUtils.loadAnimation(requireContext(), R.anim.from_rotate) }
+    private val toRotate: Animation by lazy { AnimationUtils.loadAnimation(requireContext(), R.anim.to_rotate) }
+    private val fromScale: Animation by lazy { AnimationUtils.loadAnimation(requireContext(), R.anim.from_scale) }
+    private val toScale: Animation by lazy { AnimationUtils.loadAnimation(requireContext(), R.anim.to_scale) }
+
+    private var clickedFab: Boolean = true
 
     companion object {
         var isChangedUserRecord = false
@@ -60,6 +69,8 @@ class ProfileFragment : Fragment() {
 
         auth = Firebase.auth
         currentUser = auth.currentUser
+
+        userEmail = currentUser!!.email.toString()
 
         registerLauncher()
     }
@@ -78,15 +89,14 @@ class ProfileFragment : Fragment() {
         viewModelUserRecord = ViewModelProvider(this)[UserRecordViewModel::class.java]
         viewModelUserProfile = ViewModelProvider(this)[UserProfileViewModel::class.java]
 
-        currentUser?.email.toString().let { email ->
-            populateUserProfileViews(email)
-        }
+        populateUserProfileViews()
 
         setListeners()
     }
 
 
-    private fun getUserScoresFromFirestore(userEmail: String){
+
+    private fun getUserScoresFromFirestore(){
         viewModelUserRecord.getUserScoreFromFirestore(userEmail, "10"){ score ->
             binding.textScoreTen.text = score.toString()
 
@@ -106,36 +116,36 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun getUserScoresFromRoomDB(userEmail: String){
+    private fun getUserScoresFromRoomDB(){
         viewModelUserRecord.getUserRecordFromRoomDB(userEmail){ userRecord ->
             if (userRecord != null){
-                binding.textScoreTen.text = userRecord!!.record_10Second
+                binding.textScoreTen.text = userRecord.record_10Second
                 binding.textScoreThirty.text = userRecord.record_30Second
                 binding.textScoreSixty.text = userRecord.record_60Second
             }
         }
     }
 
-    private fun checkAndUpdateUserScoreChange(userEmail: String){
+    private fun checkAndUpdateUserScoreChange(){
         if (isChangedUserRecord){
-            getUserScoresFromFirestore(userEmail)
+            getUserScoresFromFirestore()
             isChangedUserRecord = false
         }
         else
-            getUserScoresFromRoomDB(userEmail)
+            getUserScoresFromRoomDB()
     }
 
-    private fun populateUserProfileViews(userEmail: String){
-        checkAndUpdateUserScoreChange(userEmail)
+    private fun populateUserProfileViews(){
+        checkAndUpdateUserScoreChange()
 
         viewModelUserProfile.getUserFullNameFromRoomDB(userEmail){ fullName ->
             binding.textFullName.text = fullName }
 
         viewModelUserProfile.getUserProfilePictureUriFromRoomDB(userEmail){ uri ->
             if (uri.toString() != "")
-                Picasso.get().load(uri).into(binding.profilePicture)
+                Picasso.get().load(uri).into(binding.viewProfilePicture)
             else {
-                binding.profilePicture.setImageResource(R.drawable.default_profile_picture)
+                binding.viewProfilePicture.setImageResource(R.drawable.default_profile_picture)
             }
         }
     }
@@ -184,11 +194,13 @@ class ProfileFragment : Fragment() {
                             val source = ImageDecoder.createSource(requireContext().contentResolver, imageData!!)
                             selectedBitmap = ImageDecoder.decodeBitmap(source)
 
-                            binding.profilePicture.setImageBitmap(selectedBitmap)
+                            binding.viewProfilePicture.setImageBitmap(selectedBitmap)
+                            uploadPictureToFirebaseStorage()
                         } else {
                             selectedBitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageData)
 
-                            binding.profilePicture.setImageBitmap(selectedBitmap)
+                            binding.viewProfilePicture.setImageBitmap(selectedBitmap)
+                            uploadPictureToFirebaseStorage()
                         }
                     } catch (e: IOException) {
                         e.printStackTrace()
@@ -207,43 +219,6 @@ class ProfileFragment : Fragment() {
         }
     }
 
-
-    private fun changeButtonVisibility(boolean: Boolean){
-        if (boolean){
-            binding.btnEditProfile.visibility = View.GONE
-            binding.btnConfirmPicture.visibility = View.VISIBLE
-            binding.btnCancelPicture.visibility = View.VISIBLE
-        } else {
-            binding.btnEditProfile.visibility = View.VISIBLE
-            binding.btnConfirmPicture.visibility = View.GONE
-            binding.btnCancelPicture.visibility = View.GONE
-        }
-    }
-
-
-    private fun setBtnEditListener(){
-        binding.btnEditProfile.setOnClickListener {
-            val options = arrayOf("Change your name", "Change the profile picture")
-
-            val mainDialog = AlertDialog.Builder(requireContext())
-            mainDialog.setTitle("Options")
-            mainDialog.setItems(options) { dialog, which ->
-                when (which) {
-                    0 -> {
-                        showChangeNameDialog()
-                    }
-                    1 -> {
-                        selectProfilePictureFromGallery()
-                        changeButtonVisibility(true)
-                    }
-                }
-            }
-
-            val dialog = mainDialog.create()
-            dialog.show()
-        }
-    }
-
     private fun showChangeNameDialog(){
         val nameDialogView = layoutInflater.inflate(R.layout.name_dialog_layout, null)
         val inputName = nameDialogView.findViewById<EditText>(R.id.inputName)
@@ -252,15 +227,17 @@ class ProfileFragment : Fragment() {
         val nameDialogBuilder = AlertDialog.Builder(requireContext())
         nameDialogBuilder.setTitle("Enter your name.")
         nameDialogBuilder.setView(nameDialogView)
-        nameDialogBuilder.setPositiveButton("Okay") { dialog, which ->
+        nameDialogBuilder.setPositiveButton("Okay") { _, _ ->
             val newName = inputName.text.toString()
             val newSurname = inputSurname.text.toString()
 
             if (newName.isNotEmpty() && newSurname.isNotEmpty()){
-                viewModelUserProfile.updateUserFullNameOnFirestore(currentUser!!.email.toString(), newName, newSurname){ boolean ->
+                viewModelUserProfile.updateUserFullNameOnFirestore(userEmail, newName, newSurname){ boolean ->
                     if (boolean){
-                        viewModelUserProfile.updateFullNameOnRoomDB(currentUser!!.email.toString(), "$newName $newSurname")
-                        binding.textFullName.text = "$newName $newSurname"
+                        viewModelUserProfile.updateFullNameOnRoomDB(userEmail, "$newName $newSurname")
+
+                        val fullName = getString(R.string.full_name, newName, newSurname)
+                        binding.textFullName.text = fullName
                     }
                     else
                         Toast.makeText(requireContext(),"An error occurred while updating your name.", Toast.LENGTH_SHORT).show()
@@ -270,49 +247,87 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        nameDialogBuilder.setNegativeButton("Cancel") { dialog, which ->
+        nameDialogBuilder.setNegativeButton("Cancel") { dialog, _ ->
             dialog.cancel()
         }
         nameDialogBuilder.show()
     }
 
-    private fun setBtnConfirmListener(){
-        binding.btnConfirmPicture.setOnClickListener {
-            changeButtonVisibility(false)
-
-            val userEmail = currentUser!!.email.toString()
-
-            viewModelUserProfile.uploadProfilePictureToFirebaseStorage(userEmail, selectedBitmap!!){ uri ->
-                if (uri.toString() != ""){
+    private fun uploadPictureToFirebaseStorage(){
+        if (selectedBitmap != null){
+            viewModelUserProfile.uploadProfilePictureToFirebaseStorage(userEmail, selectedBitmap!!){ uri, isUploaded ->
+                if (isUploaded) {
                     viewModelUserProfile.updateUserProfilePictureUriInRoomDB(userEmail, uri.toString())
                 } else {
-                    viewModelUserProfile.getUserProfilePictureUriFromRoomDB(userEmail) { uri ->
-                        if (uri.toString() != "")
-                            Picasso.get().load(uri).into(binding.profilePicture)
-                        else
-                            binding.profilePicture.setImageResource(R.drawable.default_profile_picture)
+                    binding.viewProfilePicture.setImageResource(R.drawable.default_profile_picture)
+                }
+            }
+        }
+    }
+
+    private fun isAnimation(clicked: Boolean){
+        if (clicked){
+            binding.fabMore.startAnimation(fromRotate)
+            binding.fabEditProfile.startAnimation(fromScale)
+            binding.fabLogOut.startAnimation(fromScale)
+        } else {
+            binding.fabMore.startAnimation(toRotate)
+            binding.fabEditProfile.startAnimation(toScale)
+            binding.fabLogOut.startAnimation(toScale)
+        }
+    }
+
+    private fun isClick(){
+        isAnimation(clickedFab)
+        controlVisibilityOfFabs(clickedFab)
+        clickedFab =! clickedFab
+    }
+
+    private fun controlVisibilityOfFabs(clicked: Boolean){
+        if (clicked){
+            binding.fabEditProfile.visibility = View.INVISIBLE
+            binding.fabLogOut.visibility = View.INVISIBLE
+        } else {
+            binding.fabEditProfile.visibility = View.VISIBLE
+            binding.fabLogOut.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setFabMoreListener(){
+        binding.fabMore.setOnClickListener {
+            isClick()
+        }
+    }
+
+    private fun setFabEditProfileListener(){
+        binding.fabEditProfile.setOnClickListener {
+            isClick()
+
+            val options = arrayOf("Change your name", "Change the profile picture")
+
+            val mainDialog = AlertDialog.Builder(requireContext())
+            mainDialog.setTitle("Options")
+            mainDialog.setItems(options) { _, which ->
+                when (which) {
+                    0 -> {
+                        showChangeNameDialog()
+                    }
+                    1 -> {
+                        selectProfilePictureFromGallery()
+                        uploadPictureToFirebaseStorage()
                     }
                 }
-
             }
+
+            val dialog = mainDialog.create()
+            dialog.show()
         }
     }
 
-    private fun setBtnCancelListener(){
-        binding.btnCancelPicture.setOnClickListener {
-            changeButtonVisibility(false)
+    private fun setFabLogOutListener(){
+        binding.fabLogOut.setOnClickListener {
+            isClick()
 
-            viewModelUserProfile.getUserProfilePictureUriFromRoomDB(currentUser!!.email.toString()) { uri ->
-                if (uri.toString() != "")
-                    Picasso.get().load(uri).into(binding.profilePicture)
-                else
-                    binding.profilePicture.setImageResource(R.drawable.default_profile_picture)
-            }
-        }
-    }
-
-    private fun setBtnLogOutListener(){
-        binding.btnLogOut.setOnClickListener {
             AlertDialog.Builder(requireContext())
                 .setTitle("Log Out")
                 .setMessage("Are you sure you want to log out of your account?")
@@ -327,10 +342,39 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun setListeners(){
-        setBtnEditListener()
-        setBtnConfirmListener()
-        setBtnCancelListener()
-        setBtnLogOutListener()
+    private fun setViewProfilePictureListener(){
+        binding.viewProfilePicture.setOnClickListener{
+            val options = arrayOf("Remove Profile Picture")
+
+            val mainDialog = AlertDialog.Builder(requireContext())
+            mainDialog.setTitle("Options")
+            mainDialog.setItems(options) { _, which ->
+                when (which) {
+                    0 -> {
+                        removeProfilePicture()
+                    }
+                }
+            }
+
+            val dialog = mainDialog.create()
+            dialog.show()
+        }
     }
+
+    private fun removeProfilePicture(){
+        viewModelUserProfile.removeProfilePictureFromStorage(userEmail){ isRemoved ->
+            if (isRemoved){
+                binding.viewProfilePicture.setImageResource(R.drawable.default_profile_picture)
+                viewModelUserProfile.updateUserProfilePictureUriInRoomDB(userEmail, "")
+            }
+        }
+    }
+
+    private fun setListeners(){
+        setFabMoreListener()
+        setFabEditProfileListener()
+        setFabLogOutListener()
+        setViewProfilePictureListener()
+    }
+
 }

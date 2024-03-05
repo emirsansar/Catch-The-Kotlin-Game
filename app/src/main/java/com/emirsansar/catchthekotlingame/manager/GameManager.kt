@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
-import android.provider.ContactsContract.Profile
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
@@ -21,6 +20,7 @@ class GameManager(private val context: Context, private val userEmail: String, p
                   private var highestScore: Int, private val binding: ActivityGameBinding) {
 
     private var score: Int = 0
+
     private var runnable = Runnable {}
     private var handler = Handler(Looper.getMainLooper())
 
@@ -110,7 +110,7 @@ class GameManager(private val context: Context, private val userEmail: String, p
         }.start()
     }
 
-    private fun increaseScore() {
+    private fun incrementScore() {
         score++
         binding.scoreText.text = "Score: $score"
     }
@@ -136,7 +136,7 @@ class GameManager(private val context: Context, private val userEmail: String, p
 
     private fun setKotlinViewListener(){
         binding.kotlinImageView.setOnClickListener {
-            increaseScore()
+            incrementScore()
         }
     }
 
