@@ -24,7 +24,11 @@ Screens:
 | ------ |
 |<img src="https://i.hizliresim.com/7jezvf7.png" width="250" height="500"/>
 
-| Ranking 1 | Ranking 2 |
+| Play | Play 2|
+| ------ | ------ |
+|<img src="https://i.hizliresim.com/jumcjje.png" width="250" height="500"/>|<img src="https://i.hizliresim.com/kgpxjbf.png" width="250" height="500"/>
+
+| Ranking | Ranking 2 |
 | ------ | ------ |
 |<img src="https://i.hizliresim.com/jveuhrr.png" width="250" height="500"/>|<img src="https://i.hizliresim.com/n23iawy.png" width="250" height="500"/>
 
