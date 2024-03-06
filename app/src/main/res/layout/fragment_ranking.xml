@@ -22,25 +22,28 @@
             android:id="@+id/textView11"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:fontFamily="@font/opensansbold"
             android:text="RANKINGS"
             android:textColor="@color/black"
             android:textSize="26sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.173" />
 
         <Button
             android:id="@+id/btn_10Second"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="22dp"
             android:backgroundTint="@color/blue_3"
             android:fontFamily="@font/opensanssemibold"
             android:text="10 sec"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.086"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
@@ -48,10 +51,11 @@
             android:id="@+id/btn_30Second"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="22dp"
             android:backgroundTint="@color/blue_3"
             android:fontFamily="@font/opensanssemibold"
             android:text="30 sec"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_60Second"
             app:layout_constraintStart_toEndOf="@+id/btn_10Second"
             app:layout_constraintTop_toBottomOf="@+id/textView11" />
@@ -60,12 +64,26 @@
             android:id="@+id/btn_60Second"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="40dp"
+            android:layout_marginTop="22dp"
             android:backgroundTint="@color/blue_3"
             android:fontFamily="@font/opensanssemibold"
             android:text="60 sec"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.916"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/opensansitalic"
+            android:text="(Top 10)"
+            android:textColor="#3C3C3C"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/textView11"
+            app:layout_constraintStart_toStartOf="@+id/textView11"
             app:layout_constraintTop_toBottomOf="@+id/textView11" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
