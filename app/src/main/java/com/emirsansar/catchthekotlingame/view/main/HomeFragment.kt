@@ -10,6 +10,7 @@ import android.widget.AdapterView
 import androidx.lifecycle.ViewModelProvider
 import com.emirsansar.catchthekotlingame.databinding.FragmentHomeBinding
 import com.emirsansar.catchthekotlingame.view.game.GameActivity
+import com.emirsansar.catchthekotlingame.viewmodel.UserProfileViewModel
 import com.emirsansar.catchthekotlingame.viewmodel.UserRecordViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -29,6 +30,7 @@ class HomeFragment : Fragment() {
     private var currentUser : FirebaseUser? = null
 
     private lateinit var viewModel : UserRecordViewModel
+    private lateinit var modelProfile: UserProfileViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +51,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         viewModel = ViewModelProvider(this)[UserRecordViewModel::class.java]
+        modelProfile = ViewModelProvider(this)[UserProfileViewModel::class.java]
 
         setSpinnerListener()
         setBtnPlayGameListener()

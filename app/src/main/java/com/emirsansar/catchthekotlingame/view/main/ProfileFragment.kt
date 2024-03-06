@@ -61,7 +61,7 @@ class ProfileFragment : Fragment() {
     private var clickedFab: Boolean = true
 
     companion object {
-        var isChangedUserRecord = false
+        var isChangedUserRecord = true
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -122,6 +122,8 @@ class ProfileFragment : Fragment() {
                 binding.textScoreTen.text = userRecord.record_10Second
                 binding.textScoreThirty.text = userRecord.record_30Second
                 binding.textScoreSixty.text = userRecord.record_60Second
+            } else {
+                getUserScoresFromFirestore()
             }
         }
     }
