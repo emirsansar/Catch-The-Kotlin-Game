@@ -5,12 +5,18 @@ In this application, I used View Binding for IDs, Runnable and Handler for the t
 
 Screens: <br>
 
-| Main Menu |
+| Log In | Register |
+| ------ | ------ |
+|<img src="https://i.hizliresim.com/mecxecn.png" width="250" height="500"/>|<img src="https://i.hizliresim.com/fprszqp.png" width="250" height="500"/>
+
+| Home |
 | ------ |
-|<img src="https://github.com/emirsansar/images/blob/main/cathethekotlin/mainMenu.png" width="250" height="500"/>|
+|<img src="https://i.hizliresim.com/7jezvf7.png" width="250" height="500"/>
 
-</br>
+| Ranking 1 | Ranking 2 |
+| ------ | ------ |
+|<img src="https://i.hizliresim.com/jveuhrr.png" width="250" height="500"/>|<img src="https://i.hizliresim.com/n23iawy.png" width="250" height="500"/>
 
-| Game Screen | In Playing | End Game |
+| Porfile | Action Buton | Options |
 | ---- | ------ | --- |
-<img src="https://github.com/emirsansar/images/blob/main/cathethekotlin/playMenu.png" width="250" height="500"/>|<img src="https://github.com/emirsansar/images/blob/main/cathethekotlin/inPlaying.png" width="250" height="500"/>|<img src="https://github.com/emirsansar/images/blob/main/cathethekotlin/endGame.png" width="250" height="500"/>
+<img src="https://i.hizliresim.com/q2vx7v8.png" width="250" height="500"/>|<img src="https://i.hizliresim.com/91xiiv7.png" width="250" height="500"/>|<img src="https://i.hizliresim.com/3wdgxdk.png" width="250" height="500"/>
